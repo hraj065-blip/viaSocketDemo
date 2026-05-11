@@ -1,0 +1,660 @@
+{% extends "base.html" %}
+{% block title %}viaSocket — The Complete Automation Solution{% endblock %}
+{% block extra_css %}
+<style>
+/* ── VISION BANNER ── */
+.vision-bar{
+  background:var(--ink);color:#fff;
+  padding:.7rem 2rem;text-align:center;
+  font-family:var(--fh);font-size:.78rem;font-weight:600;
+  letter-spacing:.06em;
+  border-bottom:2px solid var(--red);
+  position:relative;z-index:998;
+  margin-top:66px;
+}
+.vision-bar span{color:var(--red)}
+
+/* ── VISION HERO ── */
+.vision-hero{
+  background:var(--ink);color:#fff;
+  padding:6rem 2rem 5rem;
+  position:relative;overflow:hidden;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.vision-hero::before{
+  content:'';position:absolute;
+  top:-120px;right:-80px;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(218,83,44,.22) 0%,transparent 70%);
+  pointer-events:none;
+}
+.vision-hero::after{
+  content:'';position:absolute;
+  bottom:-60px;left:10%;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(218,83,44,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.vision-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 420px;gap:5rem;align-items:center;
+  position:relative;z-index:1;
+}
+.vision-kicker{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--fh);font-size:.7rem;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--red);background:rgba(218,83,44,.12);
+  border:1px solid rgba(218,83,44,.25);
+  padding:.3rem .8rem;border-radius:100px;margin-bottom:1.5rem;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--red);animation:pulse-dot 1.6s ease infinite;
+}
+.vision-h1{
+  font-family:var(--fh);font-size:clamp(2.5rem,5.5vw,4.4rem);
+  font-weight:800;line-height:1.04;letter-spacing:-.04em;color:#fff;
+  margin-bottom:1.5rem;
+}
+.vision-h1 em{font-style:normal;color:var(--red)}
+.vision-statement{
+  font-size:1.05rem;color:rgba(255,255,255,.55);
+  line-height:1.78;max-width:520px;margin-bottom:2.5rem;
+}
+.vision-actions{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-red-lg{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.9rem 2.2rem;background:var(--red);color:#fff;
+  border-radius:100px;font-size:1rem;font-weight:700;
+  font-family:var(--fh);border:none;cursor:pointer;transition:var(--t);
+}
+.btn-red-lg:hover{background:var(--red-dark);transform:translateY(-2px);box-shadow:0 10px 32px rgba(218,83,44,.4)}
+.btn-ghost-wh{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.9rem 2.2rem;background:transparent;color:rgba(255,255,255,.7);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:100px;
+  font-size:1rem;font-weight:600;font-family:var(--fh);
+  cursor:pointer;transition:var(--t);
+}
+.btn-ghost-wh:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.vision-sla{
+  display:flex;gap:2.5rem;margin-top:2.5rem;
+  padding-top:2rem;border-top:1px solid rgba(255,255,255,.08);
+}
+.sla-item-val{
+  font-family:var(--fh);font-size:1.65rem;font-weight:800;
+  color:#fff;letter-spacing:-.03em;line-height:1;
+}
+.sla-item-val span{color:var(--red)}
+.sla-item-lbl{font-size:.75rem;color:rgba(255,255,255,.35);margin-top:.25rem}
+
+/* VISION RIGHT — FLOW CARD */
+.flow-widget{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:1.5rem;
+  backdrop-filter:blur(10px);
+}
+.flow-title{
+  font-family:var(--fh);font-size:.72rem;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);margin-bottom:1.25rem;
+}
+.flow-step{
+  display:flex;align-items:center;gap:.85rem;
+  padding:.85rem 1rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;margin-bottom:.5rem;
+  animation:float 4s ease-in-out infinite;
+}
+.flow-step:nth-child(3){animation-delay:-1.3s}
+.flow-step:nth-child(4){animation-delay:-2.6s}
+.step-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.step-icon.r{background:rgba(218,83,44,.2)}
+.step-icon.b{background:rgba(59,130,246,.15)}
+.step-icon.g{background:rgba(22,163,74,.15)}
+.step-icon.y{background:rgba(234,179,8,.15)}
+.step-text{flex:1}
+.step-name{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.08rem}
+.step-sub {font-size:.7rem;color:rgba(255,255,255,.35)}
+.step-dot {width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 7px rgba(34,197,94,.6)}
+.flow-connector{
+  width:2px;height:14px;
+  background:linear-gradient(to bottom,rgba(218,83,44,.5),rgba(218,83,44,.1));
+  margin:0 auto 0 27px;
+}
+.flow-meta{
+  margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.06);
+  font-size:.72rem;color:rgba(255,255,255,.25);text-align:center;
+}
+
+/* ── POSITIONING STRIP ── */
+.positioning-strip{
+  background:var(--red);color:#fff;
+  padding:1.4rem 2rem;overflow:hidden;
+}
+.pos-track{
+  display:flex;gap:3rem;animation:marquee 20s linear infinite;
+  width:max-content;align-items:center;
+}
+.pos-item{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:var(--fh);font-size:.78rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+  color:rgba(255,255,255,.85);
+}
+.pos-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4)}
+
+/* ── APPS STRIP ── */
+.apps-strip{
+  background:var(--off-white);border-bottom:1px solid var(--border);
+  padding:2.2rem 2rem;overflow:hidden;
+}
+.apps-label{
+  text-align:center;font-size:.72rem;font-weight:700;
+  font-family:var(--fh);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-30);margin-bottom:1.25rem;
+}
+.marquee-wrap{overflow:hidden;position:relative}
+.marquee-track{display:flex;gap:1rem;animation:marquee 28s linear infinite;width:max-content}
+.app-pill{
+  display:flex;align-items:center;gap:.45rem;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:100px;padding:.42rem .9rem;
+  font-size:.78rem;font-weight:500;color:var(--ink-50);
+  white-space:nowrap;transition:var(--t);
+}
+.app-pill:hover{border-color:var(--border-r);color:var(--red)}
+
+/* ── THREE TIERS ── */
+.tiers-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.tier-card{
+  border:1.5px solid var(--border);border-radius:18px;padding:2rem;
+  background:var(--white);transition:var(--t);position:relative;overflow:hidden;
+}
+.tier-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--border);transition:var(--t);
+}
+.tier-card:hover{border-color:var(--border-r);box-shadow:0 16px 48px rgba(218,83,44,.1);transform:translateY(-3px)}
+.tier-card:hover::before{background:var(--red)}
+.tier-card.featured{border-color:var(--red)}
+.tier-card.featured::before{background:var(--red)}
+.tier-pop{
+  position:absolute;top:1.25rem;right:1.25rem;
+  background:var(--red);color:#fff;font-size:.65rem;font-weight:800;
+  font-family:var(--fh);letter-spacing:.08em;text-transform:uppercase;
+  padding:.22rem .6rem;border-radius:100px;
+}
+.tier-num{
+  font-family:var(--fh);font-size:.68rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem;
+}
+.tier-name{font-family:var(--fh);font-size:1.35rem;font-weight:800;margin-bottom:.6rem}
+.tier-tag{font-size:.88rem;color:var(--ink-50);line-height:1.65;margin-bottom:1.5rem}
+.tier-feats{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.75rem}
+.tier-feats li{
+  display:flex;align-items:flex-start;gap:.55rem;
+  font-size:.85rem;color:var(--ink-50);
+}
+.tier-feats li::before{content:'✓';color:var(--red);font-weight:800;flex-shrink:0}
+.tier-btn{
+  display:block;text-align:center;padding:.7rem;border-radius:100px;
+  font-size:.875rem;font-weight:700;font-family:var(--fh);transition:var(--t);
+}
+.tier-btn-red{background:var(--red);color:#fff}
+.tier-btn-red:hover{background:var(--red-dark);box-shadow:0 8px 24px rgba(218,83,44,.3)}
+.tier-btn-ol{border:1.5px solid var(--border);color:var(--ink)}
+.tier-btn-ol:hover{border-color:var(--red);color:var(--red)}
+
+/* ── WHY DIFFERENT ── */
+.features-mosaic{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  border-radius:18px;overflow:hidden;margin-top:3rem;
+}
+.feat-cell{
+  background:var(--white);padding:2rem;transition:var(--t);
+}
+.feat-cell:hover{background:var(--red-soft)}
+.feat-icon{font-size:1.6rem;margin-bottom:1rem}
+.feat-title{font-family:var(--fh);font-size:1rem;font-weight:700;margin-bottom:.45rem}
+.feat-desc{font-size:.85rem;color:var(--ink-50);line-height:1.65}
+
+/* ── STATS ROW ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);
+  border-radius:18px;overflow:hidden;
+}
+.stat-cell{
+  background:var(--white);padding:2rem;text-align:center;transition:var(--t);
+}
+.stat-cell:hover{background:var(--red-soft)}
+
+/* ── TESTIMONIALS ── */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.testi{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.75rem;transition:var(--t);
+}
+.testi:hover{border-color:var(--border-r);box-shadow:0 8px 30px rgba(218,83,44,.07)}
+.testi-stars{color:var(--red);font-size:.9rem;margin-bottom:.85rem;letter-spacing:.05em}
+.testi-text{
+  font-size:.9rem;color:var(--ink-50);line-height:1.7;
+  margin-bottom:1.25rem;font-style:italic;
+}
+.testi-author{display:flex;align-items:center;gap:.7rem}
+.testi-av{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--red-soft);border:1px solid var(--border-r);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:800;color:var(--red);font-family:var(--fh);flex-shrink:0;
+}
+.testi-name{font-size:.85rem;font-weight:600}
+.testi-role{font-size:.73rem;color:var(--ink-30)}
+
+/* ── DUAL REVENUE ── */
+.revenue-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem}
+.rev-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:18px;padding:2rem;transition:var(--t);
+}
+.rev-card:hover{border-color:var(--border-r);transform:translateY(-2px);box-shadow:0 12px 36px rgba(218,83,44,.08)}
+.rev-card.dark{background:var(--ink);border-color:transparent}
+.rev-card.dark .feat-title{color:#fff}
+.rev-card.dark .feat-desc{color:rgba(255,255,255,.45)}
+.rev-label{
+  display:inline-block;font-family:var(--fh);font-size:.68rem;
+  font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  padding:.22rem .65rem;border-radius:100px;margin-bottom:1rem;
+}
+.rev-label.a{background:var(--red-soft);color:var(--red);border:1px solid var(--border-r)}
+.rev-label.b{background:rgba(218,83,44,.2);color:#fca87e;border:1px solid rgba(218,83,44,.3)}
+.rev-amount{
+  font-family:var(--fh);font-size:2.2rem;font-weight:800;
+  color:var(--red);letter-spacing:-.04em;line-height:1;margin-bottom:.25rem;
+}
+.rev-amount.wh{color:#fff}
+
+/* ── CTA BLOCK ── */
+.cta-block{
+  background:var(--ink);color:#fff;border-radius:24px;
+  padding:5rem 4rem;text-align:center;position:relative;overflow:hidden;
+}
+.cta-block::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(218,83,44,.2) 0%,transparent 70%);pointer-events:none;
+}
+.cta-block .h2{color:#fff}
+
+@media(max-width:1024px){
+  .vision-inner{grid-template-columns:1fr;gap:3rem}
+  .flow-widget{max-width:460px}
+  .tiers-wrap{grid-template-columns:1fr;max-width:480px;margin:3rem auto 0}
+  .features-mosaic{grid-template-columns:repeat(2,1fr)}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .testi-grid{grid-template-columns:1fr}
+  .revenue-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .features-mosaic{grid-template-columns:1fr}
+  .cta-block{padding:3rem 2rem}
+  .vision-sla{gap:1.5rem;flex-wrap:wrap}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- VISION BANNER -->
+<div class="vision-bar">
+  Our vision: <span>Every business deserves to run on autopilot.</span>
+  viaSocket is building the world's most complete automation solution — platform + services + expertise, under one roof.
+</div>
+
+<!-- VISION HERO -->
+<section class="vision-hero">
+  <div class="vision-inner">
+    <div>
+      <div class="vision-kicker"><span class="live-dot"></span> Complete Automation Solution</div>
+      <h1 class="vision-h1">
+        We don't just give<br>you a tool.<br>
+        We make your<br>business <em>run itself.</em>
+      </h1>
+      <p class="vision-statement">
+        viaSocket is the only automation partner that combines a best-in-class no-code platform with hands-on services — so every business, technical or not, can automate everything that slows them down.
+      </p>
+      <div class="vision-actions">
+        <a href="#" class="btn-red-lg">Start for Free →</a>
+        <a href="/execution" class="btn-ghost-wh">See the Execution Plan</a>
+      </div>
+      <div class="vision-sla">
+        <div>
+          <div class="sla-item-val">99<span>.9%</span></div>
+          <div class="sla-item-lbl">Uptime SLA — guaranteed</div>
+        </div>
+        <div>
+          <div class="sla-item-val">2<span>,100+</span></div>
+          <div class="sla-item-lbl">App integrations</div>
+        </div>
+        <div>
+          <div class="sla-item-val">&lt;<span>15s</span></div>
+          <div class="sla-item-lbl">Avg. workflow trigger latency</div>
+        </div>
+        <div>
+          <div class="sla-item-val">3<span>×</span></div>
+          <div class="sla-item-lbl">Revenue streams unlocked</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE FLOW WIDGET -->
+    <div class="flow-widget fade-up d2">
+      <div class="flow-title">Live automation · running now</div>
+      <div class="flow-step">
+        <div class="step-icon r">📩</div>
+        <div class="step-text">
+          <div class="step-name">New HubSpot lead captured</div>
+          <div class="step-sub">Trigger · 1s ago</div>
+        </div>
+        <div class="step-dot"></div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-step">
+        <div class="step-icon b">🤖</div>
+        <div class="step-text">
+          <div class="step-name">AI scores & qualifies lead</div>
+          <div class="step-sub">viaSocket AI · 0.4s</div>
+        </div>
+        <div class="step-dot"></div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-step">
+        <div class="step-icon y">💬</div>
+        <div class="step-text">
+          <div class="step-name">Slack alert → sales rep</div>
+          <div class="step-sub">Action · instant</div>
+        </div>
+        <div class="step-dot"></div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-step">
+        <div class="step-icon g">📅</div>
+        <div class="step-text">
+          <div class="step-name">Calendar invite sent</div>
+          <div class="step-sub">Action · Google Calendar</div>
+        </div>
+        <div class="step-dot"></div>
+      </div>
+      <div class="flow-meta">✓ 4 steps · 1.8s total · zero human effort</div>
+    </div>
+  </div>
+</section>
+
+<!-- POSITIONING STRIP -->
+<div class="positioning-strip">
+  <div class="pos-track">
+    <div class="pos-item">⬡ Complete Automation Solution <span class="pos-dot"></span></div>
+    <div class="pos-item">Platform + Services + Expertise <span class="pos-dot"></span></div>
+    <div class="pos-item">99.9% Uptime SLA <span class="pos-dot"></span></div>
+    <div class="pos-item">Self-Serve · Guided Setup · Managed <span class="pos-dot"></span></div>
+    <div class="pos-item">2,100+ Integrations <span class="pos-dot"></span></div>
+    <div class="pos-item">AI-Powered Workflows <span class="pos-dot"></span></div>
+    <div class="pos-item">No-Code · No Technical Team Required <span class="pos-dot"></span></div>
+    <div class="pos-item">⬡ Complete Automation Solution <span class="pos-dot"></span></div>
+    <div class="pos-item">Platform + Services + Expertise <span class="pos-dot"></span></div>
+    <div class="pos-item">99.9% Uptime SLA <span class="pos-dot"></span></div>
+    <div class="pos-item">Self-Serve · Guided Setup · Managed <span class="pos-dot"></span></div>
+    <div class="pos-item">2,100+ Integrations <span class="pos-dot"></span></div>
+    <div class="pos-item">AI-Powered Workflows <span class="pos-dot"></span></div>
+    <div class="pos-item">No-Code · No Technical Team Required <span class="pos-dot"></span></div>
+  </div>
+</div>
+
+<!-- APPS STRIP -->
+<div class="apps-strip">
+  <div class="apps-label">Connects with 2,100+ apps you already use</div>
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="app-pill">📊 Google Sheets</div><div class="app-pill">💬 Slack</div>
+      <div class="app-pill">📧 Gmail</div><div class="app-pill">🎯 HubSpot</div>
+      <div class="app-pill">📋 Notion</div><div class="app-pill">🔵 Pipedrive</div>
+      <div class="app-pill">📹 Zoom</div><div class="app-pill">🗂 Airtable</div>
+      <div class="app-pill">🛒 Shopify</div><div class="app-pill">📱 WhatsApp</div>
+      <div class="app-pill">🟠 Jira</div><div class="app-pill">🔗 Salesforce</div>
+      <div class="app-pill">🟣 Stripe</div><div class="app-pill">📊 Google Sheets</div>
+      <div class="app-pill">💬 Slack</div><div class="app-pill">📧 Gmail</div>
+      <div class="app-pill">🎯 HubSpot</div><div class="app-pill">📋 Notion</div>
+      <div class="app-pill">🔵 Pipedrive</div><div class="app-pill">📹 Zoom</div>
+      <div class="app-pill">🗂 Airtable</div><div class="app-pill">🛒 Shopify</div>
+      <div class="app-pill">📱 WhatsApp</div><div class="app-pill">🟠 Jira</div>
+      <div class="app-pill">🔗 Salesforce</div><div class="app-pill">🟣 Stripe</div>
+    </div>
+  </div>
+</div>
+
+<!-- THREE TIERS -->
+<section class="section section-lg">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Three Ways to Automate</div>
+      <h2 class="h2">One platform. <span class="text-red">Three levels</span><br>of partnership.</h2>
+      <p class="lead" style="max-width:560px;margin:.9rem auto 0">
+        Whether you're a developer who wants full control or a business owner who never wants to touch the technology — there's a path designed for you.
+      </p>
+    </div>
+    <div class="tiers-wrap">
+      <div class="tier-card fade-up d1">
+        <div class="tier-num">Tier 01</div>
+        <div class="tier-name">Self-Serve</div>
+        <div class="tier-tag">Sign up, build your own workflows. Full platform power, zero hand-holding needed.</div>
+        <ul class="tier-feats">
+          <li>2,100+ app integrations</li>
+          <li>AI-powered workflow builder</li>
+          <li>500+ ready-to-use templates</li>
+          <li>Web scraping & data tools</li>
+          <li>99.9% uptime SLA</li>
+          <li>Community + email support</li>
+        </ul>
+        <a href="/pricing" class="tier-btn tier-btn-ol">Start Free →</a>
+      </div>
+
+      <div class="tier-card featured fade-up d2">
+        <div class="tier-pop">Best for MSMEs</div>
+        <div class="tier-num">Tier 02</div>
+        <div class="tier-name">Guided Setup</div>
+        <div class="tier-tag">One-time fee. Our experts build your first 1–2 workflows, train your team, and hand it over. Results in days.</div>
+        <ul class="tier-feats">
+          <li>Everything in Self-Serve</li>
+          <li>Dedicated onboarding engineer</li>
+          <li>2 custom workflows built for you</li>
+          <li>Team training session (2 hrs)</li>
+          <li>30-day post-launch support</li>
+          <li>Workflow documentation included</li>
+        </ul>
+        <a href="#" class="tier-btn tier-btn-red">Book a Setup Call →</a>
+      </div>
+
+      <div class="tier-card fade-up d3">
+        <div class="tier-num">Tier 03</div>
+        <div class="tier-name">Managed</div>
+        <div class="tier-tag">Monthly retainer. We own your automation stack end-to-end. You never touch it. It just works and grows.</div>
+        <ul class="tier-feats">
+          <li>Everything in Guided Setup</li>
+          <li>Unlimited workflow maintenance</li>
+          <li>Monthly expansion sprints</li>
+          <li>Priority 24/7 monitoring</li>
+          <li>Dedicated account manager</li>
+          <li>Quarterly automation audits</li>
+        </ul>
+        <a href="#" class="tier-btn tier-btn-ol">Contact Sales →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section-sm section-gray">
+  <div class="container">
+    <div class="stats-row fade-up">
+      <div class="stat-cell">
+        <div class="stat-val"><span data-target="99" data-suffix=".9%">0</span></div>
+        <div class="stat-lbl">Uptime SLA — Contractually Guaranteed</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val"><span data-target="2100" data-suffix="+">0</span></div>
+        <div class="stat-lbl">App integrations live today</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val"><span data-target="50000" data-suffix="+">0</span></div>
+        <div class="stat-lbl">Automations running every day</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val"><span data-target="3" data-suffix="×">0</span></div>
+        <div class="stat-lbl">Average revenue growth from managed clients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY DIFFERENT -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">The viaSocket Difference</div>
+      <h2 class="h2">Not a cheaper Zapier.<br><span class="text-red">A complete solution.</span></h2>
+      <p class="lead" style="max-width:560px;margin:.9rem auto 0">
+        Every other automation tool stops at the platform. We go further — with services, expertise, and a 99.9% SLA that keeps your business running.
+      </p>
+    </div>
+    <div class="features-mosaic fade-up d1">
+      <div class="feat-cell">
+        <div class="feat-icon">🧠</div>
+        <div class="feat-title">AI-Powered Builder</div>
+        <div class="feat-desc">Describe it in plain English. Our AI assembles the full workflow, selects apps, configures steps — no coding, no guessing.</div>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-icon">🔌</div>
+        <div class="feat-title">2,100+ Integrations</div>
+        <div class="feat-desc">WhatsApp, Shopify, GST portals, payment gateways, CRMs, ERPs. The most comprehensive integration library for Indian businesses.</div>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-icon">🛡</div>
+        <div class="feat-title">99.9% Uptime SLA</div>
+        <div class="feat-desc">Contractual uptime guarantee, real-time status monitoring, automatic failover, and dedicated infrastructure for enterprise clients.</div>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-icon">🏗</div>
+        <div class="feat-title">We Build It For You</div>
+        <div class="feat-desc">No technical team? No problem. Our automation engineers design, build, test, and deploy workflows as a fully managed service.</div>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-icon">👥</div>
+        <div class="feat-title">Human-in-the-Loop</div>
+        <div class="feat-desc">Not every decision should be automated. Our Human Intervention feature pauses any workflow for a human approval before proceeding.</div>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-icon">📈</div>
+        <div class="feat-title">Dual Revenue Streams</div>
+        <div class="feat-desc">Platform subscriptions + service retainers = compounding revenue. Every managed client generates ongoing predictable income.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DUAL REVENUE STREAMS -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Business Model</div>
+      <h2 class="h2">Two streams.<br><span class="text-red">One compounding moat.</span></h2>
+      <p class="lead" style="max-width:540px;margin:.9rem auto 0">
+        Every client we serve creates recurring platform revenue AND service revenue — doubling the lifetime value of each relationship.
+      </p>
+    </div>
+    <div class="revenue-grid fade-up d1">
+      <div class="rev-card">
+        <div class="rev-label a">Stream 01 — SaaS Platform</div>
+        <h3 class="feat-title h3" style="margin-bottom:.5rem">Subscription Revenue</h3>
+        <p class="feat-desc" style="margin-bottom:1.5rem">Every user who signs up pays a monthly platform fee. Scales linearly with user growth. Low CAC, high LTV, predictable MRR.</p>
+        <div style="display:flex;gap:2rem">
+          <div><div class="stat-val" style="font-size:1.8rem">MRR</div><div class="stat-lbl">Monthly recurring baseline</div></div>
+          <div><div class="stat-val" style="font-size:1.8rem">↑85%</div><div class="stat-lbl">Retention with platform stickiness</div></div>
+        </div>
+      </div>
+      <div class="rev-card dark">
+        <div class="rev-label b">Stream 02 — Managed Services</div>
+        <h3 class="feat-title h3" style="margin-bottom:.5rem;color:#fff">Service Revenue</h3>
+        <p class="feat-desc" style="margin-bottom:1.5rem">Guided setup fees (one-time) + managed retainers (monthly). High-margin, high-value, and creates deep client lock-in.</p>
+        <div style="display:flex;gap:2rem">
+          <div><div class="rev-amount wh">3×</div><div class="stat-lbl" style="color:rgba(255,255,255,.35)">LTV vs self-serve only</div></div>
+          <div><div class="rev-amount wh">94%</div><div class="stat-lbl" style="color:rgba(255,255,255,.35)">Managed client retention</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Client Stories</div>
+      <h2 class="h2">Businesses already<br><span class="text-red">running on autopilot.</span></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi fade-up d1">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"We went from manually copying data between 5 apps to a fully automated pipeline in 3 days. The guided setup team built it, trained us, and we haven't touched it since."</div>
+        <div class="testi-author">
+          <div class="testi-av">RD</div>
+          <div><div class="testi-name">Rahul Desai</div><div class="testi-role">Operations Head · FinTech Startup, Mumbai</div></div>
+        </div>
+      </div>
+      <div class="testi fade-up d2">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"The managed service is exactly what MSMEs like us need. We have zero technical staff, but our entire lead-to-invoice process is automated. ROI was visible in week one."</div>
+        <div class="testi-author">
+          <div class="testi-av">PS</div>
+          <div><div class="testi-name">Priya Sharma</div><div class="testi-role">Founder · D2C Brand, Delhi</div></div>
+        </div>
+      </div>
+      <div class="testi fade-up d3">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"Finally something that understands Indian business. WhatsApp triggers, GST integrations, our ERP — all connected in one flow. Replaced n8n and Zapier both."</div>
+        <div class="testi-author">
+          <div class="testi-av">MK</div>
+          <div><div class="testi-name">Manish Kumar</div><div class="testi-role">CEO · Manufacturing MSME, Pune</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-sm">
+  <div class="container">
+    <div class="cta-block fade-up">
+      <div class="eyebrow" style="color:var(--red);margin-bottom:1.25rem">Start Today</div>
+      <h2 class="h2" style="color:#fff;margin-bottom:1rem">Stop doing manually<br>what a machine can do.</h2>
+      <p class="lead" style="max-width:480px;margin:0 auto 2.5rem;color:rgba(255,255,255,.45)">
+        Join thousands of businesses that move faster, run leaner, and scale smarter with viaSocket.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="#" class="btn-red-lg">Start for Free →</a>
+        <a href="/pricing" class="btn-ghost-wh">View Pricing</a>
+      </div>
+      <p style="font-size:.78rem;color:rgba(255,255,255,.22);margin-top:1.5rem">No credit card required · 99.9% uptime SLA · Free forever plan available</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

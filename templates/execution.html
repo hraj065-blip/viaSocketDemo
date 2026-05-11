@@ -1,0 +1,1247 @@
+{% extends "base.html" %}
+{% block title %}Execution Plan — viaSocket Repositioning Roadmap{% endblock %}
+{% block extra_css %}
+<style>
+/* ── EXECUTION PAGE OVERRIDE: make nav tab pop ── */
+.nav-link[href="/execution"] {
+  color: var(--red) !important;
+  background: var(--red-soft) !important;
+  font-weight: 700 !important;
+  position: relative;
+}
+.nav-link[href="/execution"]::after {
+  content: '★ KEY';
+  position: absolute;
+  top: -8px; right: -4px;
+  background: var(--red);
+  color: #fff;
+  font-size: .52rem;
+  font-weight: 800;
+  font-family: var(--fh);
+  letter-spacing: .08em;
+  padding: .1rem .35rem;
+  border-radius: 100px;
+}
+
+/* ── HERO ── */
+.exec-hero {
+  background: var(--ink);
+  color: #fff;
+  padding: 8rem 2rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.exec-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: -100px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(218,83,44,.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.exec-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; right: -50px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(218,83,44,.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.exec-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 4rem;
+  align-items: center;
+}
+.exec-kicker {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--fh); font-size: .7rem; font-weight: 800;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--red); background: rgba(218,83,44,.12);
+  border: 1px solid rgba(218,83,44,.3);
+  padding: .3rem .85rem; border-radius: 100px; margin-bottom: 1.5rem;
+}
+.exec-h1 {
+  font-family: var(--fh);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800; line-height: 1.05;
+  letter-spacing: -.04em; color: #fff;
+  margin-bottom: 1.25rem;
+}
+.exec-h1 em { font-style: normal; color: var(--red); }
+.exec-sub {
+  font-size: 1rem; color: rgba(255,255,255,.5);
+  line-height: 1.8; max-width: 500px; margin-bottom: 2rem;
+}
+.exec-meta {
+  display: flex; gap: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.exec-meta-val {
+  font-family: var(--fh); font-size: 1.5rem;
+  font-weight: 800; color: #fff; letter-spacing: -.03em; line-height: 1;
+}
+.exec-meta-val span { color: var(--red); }
+.exec-meta-lbl { font-size: .72rem; color: rgba(255,255,255,.3); margin-top: .2rem; }
+
+/* Hero right — summary card */
+.exec-summary-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px; padding: 1.75rem;
+  backdrop-filter: blur(10px);
+}
+.esc-title {
+  font-family: var(--fh); font-size: .68rem; font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 1.25rem;
+}
+.esc-phase {
+  display: flex; align-items: center; gap: .85rem;
+  padding: .85rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  margin-bottom: .5rem;
+  transition: var(--t);
+}
+.esc-phase:hover { background: rgba(218,83,44,.12); border-color: rgba(218,83,44,.2); }
+.esc-num {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--red); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fh); font-size: .7rem; font-weight: 800;
+  flex-shrink: 0;
+}
+.esc-name { font-size: .83rem; font-weight: 600; color: #fff; margin-bottom: .05rem; }
+.esc-range { font-size: .7rem; color: rgba(255,255,255,.3); }
+.esc-status {
+  margin-left: auto;
+  font-size: .62rem; font-weight: 800;
+  font-family: var(--fh); letter-spacing: .06em;
+  text-transform: uppercase; padding: .18rem .5rem;
+  border-radius: 100px; flex-shrink: 0;
+}
+.esc-status.now { background: rgba(218,83,44,.2); color: #fca87e; border: 1px solid rgba(218,83,44,.3); }
+.esc-status.next { background: rgba(255,255,255,.06); color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.08); }
+
+/* ── PROGRESS BAR STRIP ── */
+.progress-strip {
+  background: var(--ink);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 0 2rem 2.5rem;
+}
+.progress-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,.06);
+  border-radius: 12px; overflow: hidden;
+}
+.prog-phase {
+  background: rgba(255,255,255,.03);
+  padding: 1.25rem 1.5rem;
+  position: relative; overflow: hidden;
+}
+.prog-phase.active { background: rgba(218,83,44,.1); }
+.prog-bar {
+  position: absolute; bottom: 0; left: 0; height: 3px;
+  background: rgba(255,255,255,.08);
+}
+.prog-bar-fill {
+  height: 100%; background: var(--red);
+  border-radius: 100px;
+}
+.prog-label {
+  font-family: var(--fh); font-size: .62rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: .4rem;
+}
+.prog-phase.active .prog-label { color: var(--red); }
+.prog-name { font-size: .85rem; font-weight: 600; color: rgba(255,255,255,.7); }
+.prog-phase.active .prog-name { color: #fff; }
+.prog-timing { font-size: .72rem; color: rgba(255,255,255,.25); margin-top: .15rem; }
+
+/* ── SECTION HEADERS ── */
+.phase-header {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.phase-num-big {
+  font-family: var(--fh); font-size: 4rem; font-weight: 800;
+  color: var(--red-mid); letter-spacing: -.06em; line-height: 1;
+  flex-shrink: 0;
+}
+.phase-tag {
+  font-family: var(--fh); font-size: .68rem; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--red); margin-bottom: .3rem;
+}
+.phase-title {
+  font-family: var(--fh); font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 800; letter-spacing: -.03em; line-height: 1.1;
+}
+.phase-subtitle { font-size: .9rem; color: var(--ink-50); margin-top: .35rem; }
+
+/* ── PHASE 01: ACTIVATION ── */
+.activation-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.activation-main {
+  background: var(--ink); color: #fff;
+  border-radius: 18px; padding: 2.25rem;
+  position: relative; overflow: hidden;
+}
+.activation-main::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(218,83,44,.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+.activation-right {
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+.act-stat-card {
+  flex: 1;
+  background: var(--red-soft);
+  border: 1px solid var(--border-r);
+  border-radius: 14px; padding: 1.5rem;
+  text-align: center;
+}
+.act-stat-num {
+  font-family: var(--fh); font-size: 2.2rem; font-weight: 800;
+  color: var(--red); letter-spacing: -.05em; line-height: 1;
+  margin-bottom: .3rem;
+}
+.act-stat-lbl { font-size: .8rem; color: var(--ink-50); line-height: 1.5; }
+
+.act-steps {
+  display: flex; flex-direction: column; gap: .75rem;
+  margin-top: 1.25rem; position: relative; z-index: 1;
+}
+.act-step {
+  display: flex; align-items: flex-start; gap: .75rem;
+  padding: .85rem 1rem;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+}
+.act-step-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(218,83,44,.2); color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0;
+}
+.act-step-title { font-size: .83rem; font-weight: 600; color: #fff; margin-bottom: .1rem; }
+.act-step-desc { font-size: .75rem; color: rgba(255,255,255,.4); line-height: 1.55; }
+
+/* Target profiles row */
+.target-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+.target-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 1.5rem;
+  transition: var(--t);
+}
+.target-card:hover {
+  border-color: var(--border-r);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(218,83,44,.08);
+}
+.target-icon { font-size: 1.5rem; margin-bottom: .75rem; }
+.target-segment {
+  font-family: var(--fh); font-size: .62rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--red); margin-bottom: .3rem;
+}
+.target-name { font-family: var(--fh); font-size: .95rem; font-weight: 800; margin-bottom: .5rem; }
+.target-desc { font-size: .8rem; color: var(--ink-50); line-height: 1.6; }
+.target-hook {
+  margin-top: .85rem; padding-top: .85rem;
+  border-top: 1px solid var(--border);
+  font-size: .78rem; color: var(--red); font-weight: 600;
+}
+
+/* ── PHASE 02: PRODUCTIZATION ── */
+.prod-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.prod-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+  transition: var(--t); position: relative;
+}
+.prod-card:hover {
+  border-color: var(--border-r);
+  box-shadow: 0 12px 36px rgba(218,83,44,.08);
+  transform: translateY(-2px);
+}
+.prod-card.featured {
+  background: var(--ink); border-color: var(--ink);
+  color: #fff;
+}
+.prod-card-tag {
+  font-family: var(--fh); font-size: .62rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--red); margin-bottom: .65rem;
+}
+.prod-card.featured .prod-card-tag { color: rgba(218,83,44,.8); }
+.prod-card-title {
+  font-family: var(--fh); font-size: 1.05rem; font-weight: 800;
+  margin-bottom: .6rem; letter-spacing: -.02em;
+}
+.prod-card.featured .prod-card-title { color: #fff; }
+.prod-card-desc { font-size: .83rem; color: var(--ink-50); line-height: 1.65; }
+.prod-card.featured .prod-card-desc { color: rgba(255,255,255,.5); }
+.prod-metric {
+  margin-top: 1.25rem; padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: .4rem;
+}
+.prod-card.featured .prod-metric { border-top-color: rgba(255,255,255,.08); }
+.prod-metric-val {
+  font-family: var(--fh); font-size: 1.6rem;
+  font-weight: 800; color: var(--red); letter-spacing: -.04em;
+}
+.prod-card.featured .prod-metric-val { color: #fca87e; }
+.prod-metric-lbl { font-size: .75rem; color: var(--ink-30); }
+.prod-card.featured .prod-metric-lbl { color: rgba(255,255,255,.3); }
+
+/* Marketplace mock */
+.marketplace-mock {
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+  margin-top: 1.5rem;
+}
+.mock-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.mock-title {
+  font-family: var(--fh); font-size: .78rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-30);
+}
+.mock-badge {
+  background: var(--red-soft); color: var(--red);
+  border: 1px solid var(--border-r);
+  font-family: var(--fh); font-size: .62rem; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: .2rem .55rem; border-radius: 100px;
+}
+.mock-items {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem;
+}
+.mock-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem;
+  transition: var(--t); cursor: pointer;
+}
+.mock-item:hover { border-color: var(--border-r); transform: translateY(-1px); }
+.mock-item-icon { font-size: 1.3rem; margin-bottom: .5rem; }
+.mock-item-name { font-size: .8rem; font-weight: 600; color: var(--ink); margin-bottom: .2rem; }
+.mock-item-price { font-size: .72rem; color: var(--red); font-weight: 700; font-family: var(--fh); }
+
+/* ── PHASE 03: ECOSYSTEM ── */
+.ecosystem-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+}
+.ecosystem-main {
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+.eco-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+  transition: var(--t);
+}
+.eco-card:hover { border-color: var(--border-r); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(218,83,44,.08); }
+.eco-card-header { display: flex; align-items: center; gap: .85rem; margin-bottom: 1rem; }
+.eco-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--red-soft); border: 1px solid var(--border-r);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+}
+.eco-card-tag {
+  font-family: var(--fh); font-size: .62rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--red); margin-bottom: .15rem;
+}
+.eco-card-title { font-family: var(--fh); font-size: 1rem; font-weight: 800; letter-spacing: -.02em; }
+.eco-card-desc { font-size: .85rem; color: var(--ink-50); line-height: 1.65; }
+.eco-stats {
+  display: flex; gap: 1.5rem; margin-top: 1rem;
+  padding-top: 1rem; border-top: 1px solid var(--border);
+}
+.eco-s-val { font-family: var(--fh); font-size: 1.3rem; font-weight: 800; color: var(--red); letter-spacing: -.03em; }
+.eco-s-lbl { font-size: .72rem; color: var(--ink-30); }
+
+/* Partner tier visualization */
+.partner-tiers-card {
+  background: var(--ink); color: #fff;
+  border-radius: 16px; padding: 2rem;
+  height: 100%;
+}
+.pt-title {
+  font-family: var(--fh); font-size: .68rem; font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.35); margin-bottom: 1.5rem;
+}
+.partner-tier {
+  display: flex; align-items: center; gap: .85rem;
+  padding: 1rem;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px; margin-bottom: .75rem;
+  transition: var(--t);
+}
+.partner-tier:hover { background: rgba(218,83,44,.12); border-color: rgba(218,83,44,.2); }
+.pt-badge {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 800; font-family: var(--fh);
+  flex-shrink: 0;
+}
+.pt-gold { background: rgba(234,179,8,.15); color: #fbbf24; }
+.pt-silver { background: rgba(255,255,255,.08); color: rgba(255,255,255,.6); }
+.pt-bronze { background: rgba(168,85,247,.1); color: #c084fc; }
+.pt-info { flex: 1; }
+.pt-name { font-size: .83rem; font-weight: 600; color: #fff; margin-bottom: .08rem; }
+.pt-desc { font-size: .72rem; color: rgba(255,255,255,.35); }
+.pt-rev { font-family: var(--fh); font-size: .85rem; font-weight: 800; color: var(--red); flex-shrink: 0; }
+
+/* ── TIMELINE SECTION ── */
+.timeline-section {
+  background: var(--off-white);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.timeline {
+  position: relative; padding-left: 3rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 14px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--red), rgba(218,83,44,.1));
+}
+.tl-item {
+  position: relative; padding-bottom: 2.5rem;
+}
+.tl-dot {
+  position: absolute; left: -2.55rem; top: .25rem;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--red); border: 3px solid var(--off-white);
+  box-shadow: 0 0 0 3px var(--red);
+  flex-shrink: 0;
+}
+.tl-dot.open {
+  background: var(--white);
+  border-color: var(--border);
+  box-shadow: 0 0 0 3px var(--border);
+}
+.tl-month {
+  font-family: var(--fh); font-size: .68rem; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--red); margin-bottom: .35rem;
+}
+.tl-item.future .tl-month { color: var(--ink-30); }
+.tl-event-title {
+  font-family: var(--fh); font-size: 1rem; font-weight: 800;
+  letter-spacing: -.02em; margin-bottom: .3rem;
+}
+.tl-item.future .tl-event-title { color: var(--ink-50); }
+.tl-event-desc { font-size: .83rem; color: var(--ink-50); line-height: 1.65; }
+.tl-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .65rem; }
+.tl-tag {
+  font-size: .68rem; font-weight: 700; font-family: var(--fh);
+  padding: .2rem .55rem; border-radius: 100px;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.tl-tag.r { background: var(--red-soft); color: var(--red); border: 1px solid var(--border-r); }
+.tl-tag.g { background: #edfbf3; color: #15803d; border: 1px solid rgba(21,128,61,.2); }
+.tl-tag.b { background: #eff6ff; color: #1d4ed8; border: 1px solid rgba(29,78,216,.2); }
+.tl-tag.k { background: var(--off-white); color: var(--ink-30); border: 1px solid var(--border); }
+
+/* ── KPIs ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.kpi-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+  transition: var(--t);
+}
+.kpi-card:hover { border-color: var(--border-r); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(218,83,44,.08); }
+.kpi-phase {
+  font-family: var(--fh); font-size: .62rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--red); margin-bottom: .5rem;
+}
+.kpi-target {
+  font-family: var(--fh); font-size: 2.2rem; font-weight: 800;
+  letter-spacing: -.05em; color: var(--ink); line-height: 1; margin-bottom: .25rem;
+}
+.kpi-label { font-size: .82rem; color: var(--ink-50); margin-bottom: 1rem; }
+.kpi-breakdown { font-size: .78rem; color: var(--ink-30); line-height: 1.7; }
+.kpi-breakdown strong { color: var(--ink); }
+
+/* ── RISK TABLE ── */
+.risk-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.risk-table th {
+  font-family: var(--fh); font-size: .68rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: .85rem 1.25rem; background: var(--off-white);
+  border-bottom: 2px solid var(--border); text-align: left;
+}
+.risk-table td {
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+  color: var(--ink-50); vertical-align: top;
+}
+.risk-table tr:hover td { background: var(--red-soft); }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-level {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .72rem; font-weight: 700; font-family: var(--fh);
+  padding: .2rem .6rem; border-radius: 100px;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.risk-hi { background: #fef2f2; color: #dc2626; border: 1px solid rgba(220,38,38,.2); }
+.risk-md { background: #fefce8; color: #ca8a04; border: 1px solid rgba(202,138,4,.2); }
+.risk-lo { background: #f0fdf4; color: #16a34a; border: 1px solid rgba(22,163,74,.2); }
+
+/* ── ASK / CTA ── */
+.ask-section {
+  background: var(--ink);
+  color: #fff;
+  position: relative; overflow: hidden;
+}
+.ask-section::before {
+  content: '';
+  position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 400px;
+  background: radial-gradient(ellipse, rgba(218,83,44,.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+.ask-inner {
+  max-width: 900px; margin: 0 auto;
+  text-align: center; position: relative; z-index: 1;
+}
+.ask-list {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem; margin: 3rem 0;
+}
+.ask-item {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px; padding: 1.5rem;
+  text-align: left; transition: var(--t);
+}
+.ask-item:hover { background: rgba(218,83,44,.1); border-color: rgba(218,83,44,.2); }
+.ask-item-num {
+  font-family: var(--fh); font-size: 1.5rem; font-weight: 800;
+  color: var(--red); letter-spacing: -.04em; line-height: 1; margin-bottom: .6rem;
+}
+.ask-item-label { font-size: .83rem; font-weight: 600; color: #fff; margin-bottom: .3rem; }
+.ask-item-desc { font-size: .78rem; color: rgba(255,255,255,.4); line-height: 1.6; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .exec-hero-inner { grid-template-columns: 1fr; }
+  .exec-summary-card { max-width: 420px; }
+  .progress-inner { grid-template-columns: repeat(2, 1fr); }
+  .activation-grid { grid-template-columns: 1fr; }
+  .prod-grid { grid-template-columns: 1fr; }
+  .ecosystem-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .ask-list { grid-template-columns: 1fr; }
+  .target-row { grid-template-columns: 1fr; }
+  .mock-items { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .progress-inner { grid-template-columns: 1fr; }
+  .exec-meta { flex-wrap: wrap; gap: 1.25rem; }
+  .ask-list { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="exec-hero">
+  <div class="exec-hero-inner">
+    <div>
+      <div class="exec-kicker">
+        <span class="live-dot"></span>
+        Strategy Document · CEO Briefing
+      </div>
+      <h1 class="exec-h1">
+        The <em>complete</em><br>
+        repositioning<br>
+        playbook.
+      </h1>
+      <p class="exec-sub">
+        A phased, milestone-driven roadmap to transform viaSocket from an automation tool into India's only full-stack automation solution — platform, services, and a certified partner network — in 12 months.
+      </p>
+      <div class="exec-meta">
+        <div class="exec-meta-item">
+          <div class="exec-meta-val">3 <span>Phases</span></div>
+          <div class="exec-meta-lbl">Clear, sequential milestones</div>
+        </div>
+        <div class="exec-meta-item">
+          <div class="exec-meta-val">12 <span>Months</span></div>
+          <div class="exec-meta-lbl">To full market repositioning</div>
+        </div>
+        <div class="exec-meta-item">
+          <div class="exec-meta-val">2 <span>Streams</span></div>
+          <div class="exec-meta-lbl">Revenue from day one</div>
+        </div>
+        <div class="exec-meta-item">
+          <div class="exec-meta-val">63M <span>TAM</span></div>
+          <div class="exec-meta-lbl">Underserved MSMEs unlocked</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exec-summary-card">
+      <div class="esc-title">12-Month Roadmap</div>
+      <div class="esc-phase">
+        <div class="esc-num">01</div>
+        <div class="esc-info">
+          <div class="esc-name">Activation</div>
+          <div class="esc-range">Months 1–3 · Service launch</div>
+        </div>
+        <div class="esc-status now">Now</div>
+      </div>
+      <div class="esc-phase">
+        <div class="esc-num">02</div>
+        <div class="esc-info">
+          <div class="esc-name">Productization</div>
+          <div class="esc-range">Months 4–8 · Marketplace build</div>
+        </div>
+        <div class="esc-status next">Next</div>
+      </div>
+      <div class="esc-phase">
+        <div class="esc-num">03</div>
+        <div class="esc-info">
+          <div class="esc-name">Ecosystem</div>
+          <div class="esc-range">Months 9–12 · Partner network</div>
+        </div>
+        <div class="esc-status next">Future</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PROGRESS BAR ═══════════════════ -->
+<div class="progress-strip">
+  <div class="progress-inner">
+    <div class="prog-phase active">
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:100%"></div></div>
+      <div class="prog-label">Phase 01</div>
+      <div class="prog-name">Activation</div>
+      <div class="prog-timing">Months 1–3</div>
+    </div>
+    <div class="prog-phase">
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+      <div class="prog-label">Phase 02</div>
+      <div class="prog-name">Productization</div>
+      <div class="prog-timing">Months 4–8</div>
+    </div>
+    <div class="prog-phase">
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+      <div class="prog-label">Phase 03</div>
+      <div class="prog-name">Ecosystem</div>
+      <div class="prog-timing">Months 9–12</div>
+    </div>
+    <div class="prog-phase">
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+      <div class="prog-label">Target</div>
+      <div class="prog-name">Full Repositioning</div>
+      <div class="prog-timing">Month 12 ✦</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PHASE 01: ACTIVATION ═══════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="phase-header fade-up">
+      <div class="phase-num-big">01</div>
+      <div class="phase-header-text">
+        <div class="phase-tag">Months 1–3 · Foundation</div>
+        <div class="phase-title">Activation: Prove the model,<br>lock in early retention.</div>
+        <div class="phase-subtitle">Target the highest-pain MSME segments. Build their first 2 workflows free to demonstrate ROI — then convert to paid managed retainers.</div>
+      </div>
+    </div>
+
+    <div class="activation-grid fade-up d1">
+      <div class="activation-main">
+        <div style="font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;position:relative;z-index:1">
+          The Free-to-Paid Flywheel
+        </div>
+        <div style="font-family:var(--fh);font-size:1.35rem;font-weight:800;color:#fff;letter-spacing:-.025em;margin-bottom:.5rem;position:relative;z-index:1">
+          Build 2 critical flows for free.<br>Let the ROI do the selling.
+        </div>
+        <div style="font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.75;margin-bottom:1.5rem;position:relative;z-index:1">
+          We identify the 2 workflows that will have the most visible impact on a prospect's business — lead capture, invoice generation, WhatsApp notifications — and build them at no cost. When they see 10 hours/week returned to their team in the first month, the conversation about a managed retainer becomes trivial.
+        </div>
+        <div class="act-steps">
+          <div class="act-step">
+            <div class="act-step-icon">🎯</div>
+            <div>
+              <div class="act-step-title">Identify 30 pilot MSME accounts</div>
+              <div class="act-step-desc">Target: D2C brands, manufacturing SMEs, logistics firms, CA/tax practices — via LinkedIn, trade associations, referrals.</div>
+            </div>
+          </div>
+          <div class="act-step">
+            <div class="act-step-icon">🛠</div>
+            <div>
+              <div class="act-step-title">Build 2 flows per client — free</div>
+              <div class="act-step-desc">Discovery call → process mapping → our engineers build → handover in 5 working days. No cost, no strings initially.</div>
+            </div>
+          </div>
+          <div class="act-step">
+            <div class="act-step-icon">📈</div>
+            <div>
+              <div class="act-step-title">Track ROI obsessively at 30 days</div>
+              <div class="act-step-desc">Hours saved, errors eliminated, revenue influenced. Present a one-page ROI report — this becomes the managed retainer pitch.</div>
+            </div>
+          </div>
+          <div class="act-step">
+            <div class="act-step-icon">💰</div>
+            <div>
+              <div class="act-step-title">Convert 50%+ to Managed retainers</div>
+              <div class="act-step-desc">Target: ₹12,000–₹25,000/mo retainer. 15 clients × ₹18,000 avg = ₹2.7L MRR from services alone by Month 3.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="activation-right">
+        <div class="act-stat-card">
+          <div class="act-stat-num">30</div>
+          <div class="act-stat-lbl">Pilot MSME clients targeted<br>in Months 1–3</div>
+        </div>
+        <div class="act-stat-card">
+          <div class="act-stat-num">50%</div>
+          <div class="act-stat-lbl">Target conversion rate<br>from pilot to paid retainer</div>
+        </div>
+        <div class="act-stat-card">
+          <div class="act-stat-num">₹2.7L</div>
+          <div class="act-stat-lbl">Monthly service revenue<br>target by end of Phase 01</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Segments -->
+    <div class="fade-up d2">
+      <div style="font-family:var(--fh);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-30);margin-bottom:1.25rem">
+        Priority Target Segments
+      </div>
+      <div class="target-row">
+        <div class="target-card">
+          <div class="target-icon">🛍</div>
+          <div class="target-segment">Segment A</div>
+          <div class="target-name">D2C & E-Commerce</div>
+          <div class="target-desc">Shopify/WooCommerce stores with manual order → WhatsApp confirmation → accounting workflows. High volume, repetitive tasks, clear ROI.</div>
+          <div class="target-hook">→ First automation: Order → WhatsApp → Invoice</div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">🏭</div>
+          <div class="target-segment">Segment B</div>
+          <div class="target-name">Manufacturing MSMEs</div>
+          <div class="target-desc">Small manufacturers drowning in manual purchase orders, GST filing coordination, vendor follow-ups. ERP integrations pay for themselves fast.</div>
+          <div class="target-hook">→ First automation: PO → Vendor WhatsApp → GST log</div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">📊</div>
+          <div class="target-segment">Segment C</div>
+          <div class="target-name">CA & Tax Firms</div>
+          <div class="target-desc">Practices with 100+ clients managing document collection, deadline reminders, and filing status manually via WhatsApp and email.</div>
+          <div class="target-hook">→ First automation: Reminder → Doc collection → Alert</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PHASE 02: PRODUCTIZATION ═══════════════════ -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="phase-header fade-up">
+      <div class="phase-num-big" style="color:var(--red-mid)">02</div>
+      <div class="phase-header-text">
+        <div class="phase-tag">Months 4–8 · Scale Engine</div>
+        <div class="phase-title">Productization: Turn services<br>into a scalable marketplace.</div>
+        <div class="phase-subtitle">Build an in-app service marketplace so clients can self-serve upgrades with one-click billing — reducing our sales overhead while expanding per-account revenue.</div>
+      </div>
+    </div>
+
+    <div class="prod-grid fade-up d1">
+      <div class="prod-card featured">
+        <div class="prod-card-tag">Core Launch</div>
+        <div class="prod-card-title">In-App Service Marketplace</div>
+        <div class="prod-card-desc">A curated catalogue of automation services bookable directly inside the viaSocket dashboard. No sales call needed — users browse, purchase, and our team gets assigned automatically.</div>
+        <div class="prod-metric">
+          <div class="prod-metric-val">1-click</div>
+          <div class="prod-metric-lbl">booking for any service tier</div>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-card-tag">Feature 01</div>
+        <div class="prod-card-title">"Request a Plug" Button</div>
+        <div class="prod-card-desc">Any user who needs a new integration or connector can request it directly from the workflow builder. Our team builds it, it ships to the library — and they get a notification when it's live.</div>
+        <div class="prod-metric">
+          <div class="prod-metric-val">72hr</div>
+          <div class="prod-metric-lbl">target turnaround for custom plugs</div>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-card-tag">Feature 02</div>
+        <div class="prod-card-title">"Audit My Workflow" Service</div>
+        <div class="prod-card-desc">A bookable 1-hour session where a viaSocket engineer reviews a client's existing workflows, identifies bottlenecks, and delivers a written optimisation report. Upsell trigger for managed expansion sprints.</div>
+        <div class="prod-metric">
+          <div class="prod-metric-val">₹3,500</div>
+          <div class="prod-metric-lbl">per audit session (one-click purchase)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketplace Mock -->
+    <div class="marketplace-mock fade-up d2">
+      <div class="mock-header">
+        <div class="mock-title">Service Marketplace Preview</div>
+        <div class="mock-badge">Phase 02 · Months 4–8</div>
+      </div>
+      <div class="mock-items">
+        <div class="mock-item">
+          <div class="mock-item-icon">⚡</div>
+          <div class="mock-item-name">Express Workflow Build</div>
+          <div class="mock-item-price">₹8,000 · 48hr delivery</div>
+        </div>
+        <div class="mock-item">
+          <div class="mock-item-icon">🔍</div>
+          <div class="mock-item-name">Audit My Workflows</div>
+          <div class="mock-item-price">₹3,500 · 1hr session</div>
+        </div>
+        <div class="mock-item">
+          <div class="mock-item-icon">🔌</div>
+          <div class="mock-item-name">Request a Plug</div>
+          <div class="mock-item-price">₹5,000 · custom integration</div>
+        </div>
+        <div class="mock-item">
+          <div class="mock-item-icon">📚</div>
+          <div class="mock-item-name">Team Training Session</div>
+          <div class="mock-item-price">₹6,000 · 2hr workshop</div>
+        </div>
+        <div class="mock-item">
+          <div class="mock-item-icon">🛡</div>
+          <div class="mock-item-name">Monthly Monitoring</div>
+          <div class="mock-item-price">₹4,500/mo · add-on</div>
+        </div>
+        <div class="mock-item">
+          <div class="mock-item-icon">📊</div>
+          <div class="mock-item-name">Quarterly ROI Report</div>
+          <div class="mock-item-price">₹2,500 · per report</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 02 additional initiatives -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.5rem" class="fade-up d3">
+      <div class="card">
+        <div style="font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.75rem">Initiative 03</div>
+        <div style="font-family:var(--fh);font-size:1.05rem;font-weight:800;margin-bottom:.6rem">Industry-Specific Workflow Packs</div>
+        <div style="font-size:.85rem;color:var(--ink-50);line-height:1.65">Pre-built, documented workflow packs for D2C, logistics, CA firms, and manufacturing. Sold as a one-time purchase or bundled into managed plans. Each pack also becomes a case-study SEO asset that attracts the next 100 similar clients.</div>
+      </div>
+      <div class="card">
+        <div style="font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.75rem">Initiative 04</div>
+        <div style="font-family:var(--fh);font-size:1.05rem;font-weight:800;margin-bottom:.6rem">CA & Trade Association Channel</div>
+        <div style="font-size:.85rem;color:var(--ink-50);line-height:1.65">Partner with 20 chartered accountant networks and 10 MSME trade associations to white-label the Guided Setup service. Each CA becomes a distribution channel, earning a referral fee for every client they bring. Zero CAC for us; qualified leads from trusted sources.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PHASE 03: ECOSYSTEM ═══════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="phase-header fade-up">
+      <div class="phase-num-big" style="color:var(--red-mid)">03</div>
+      <div class="phase-header-text">
+        <div class="phase-tag">Months 9–12 · Moat Builder</div>
+        <div class="phase-title">Ecosystem: Build a network<br>that scales without us.</div>
+        <div class="phase-subtitle">Launch a Certified Partner Network — third-party automation experts who deliver managed services under the viaSocket brand, while we collect platform royalties and expand without linear headcount growth.</div>
+      </div>
+    </div>
+
+    <div class="ecosystem-grid fade-up d1">
+      <div class="ecosystem-main">
+        <div class="eco-card">
+          <div class="eco-card-header">
+            <div class="eco-icon">🏅</div>
+            <div>
+              <div class="eco-card-tag">Foundation</div>
+              <div class="eco-card-title">viaSocket Certified Partner Programme</div>
+            </div>
+          </div>
+          <div class="eco-card-desc">
+            Freelance automation engineers and small agencies get trained, certified, and listed in our partner directory. They win clients using our brand and tools; we collect 15–20% platform royalty on every engagement. Scales the Managed tier to 100+ clients without hiring 100+ engineers.
+          </div>
+          <div class="eco-stats">
+            <div>
+              <div class="eco-s-val">15–20%</div>
+              <div class="eco-s-lbl">Royalty per partner engagement</div>
+            </div>
+            <div>
+              <div class="eco-s-val">50+</div>
+              <div class="eco-s-lbl">Partner target by Month 12</div>
+            </div>
+            <div>
+              <div class="eco-s-val">Zero</div>
+              <div class="eco-s-lbl">Additional headcount needed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eco-card">
+          <div class="eco-card-header">
+            <div class="eco-icon">🏗</div>
+            <div>
+              <div class="eco-card-tag">Infrastructure</div>
+              <div class="eco-card-title">Partner Enablement Stack</div>
+            </div>
+          </div>
+          <div class="eco-card-desc">
+            Everything a certified partner needs to deliver our managed service: a private partner dashboard, shared client accounts, templated workflow libraries, a co-branded client portal, and direct support escalation to our core team. Partners sell, we enable.
+          </div>
+        </div>
+      </div>
+
+      <div class="partner-tiers-card fade-up d2">
+        <div class="pt-title">Certified Partner Tiers</div>
+        <div class="partner-tier">
+          <div class="pt-badge pt-gold">★</div>
+          <div class="pt-info">
+            <div class="pt-name">Gold Partner</div>
+            <div class="pt-desc">10+ managed clients · certified · dedicated support</div>
+          </div>
+          <div class="pt-rev">12% royalty</div>
+        </div>
+        <div class="partner-tier">
+          <div class="pt-badge pt-silver">●</div>
+          <div class="pt-info">
+            <div class="pt-name">Silver Partner</div>
+            <div class="pt-desc">3–9 managed clients · certified</div>
+          </div>
+          <div class="pt-rev">16% royalty</div>
+        </div>
+        <div class="partner-tier">
+          <div class="pt-badge pt-bronze">◆</div>
+          <div class="pt-info">
+            <div class="pt-name">Bronze Partner</div>
+            <div class="pt-desc">1–2 clients · training only</div>
+          </div>
+          <div class="pt-rev">20% royalty</div>
+        </div>
+
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06)">
+          <div style="font-family:var(--fh);font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.85rem">Why Partners Join</div>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.7">
+            ✓ Established brand & credibility<br>
+            ✓ Proven platform (no product risk)<br>
+            ✓ Ready-made client acquisition via marketplace<br>
+            ✓ Certification = premium positioning in market<br>
+            ✓ Shared client success resources
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 12-MONTH TIMELINE ═══════════════════ -->
+<section class="section timeline-section">
+  <div class="container">
+    <div class="text-center fade-up" style="margin-bottom:3.5rem">
+      <div class="eyebrow">Month-by-Month</div>
+      <h2 class="h2">The 12-month<br><span class="text-red">execution calendar.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem" class="fade-up d1">
+      <div>
+        <div style="font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:1.75rem">Phase 01 + 02</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-month">Month 1</div>
+            <div class="tl-event-title">Service team formation + first pilot outreach</div>
+            <div class="tl-event-desc">Hire 2 automation engineers. Build the internal delivery playbook. Identify 30 MSME prospects via LinkedIn and trade associations. Begin first discovery calls.</div>
+            <div class="tl-tags">
+              <span class="tl-tag r">Hiring</span>
+              <span class="tl-tag b">Outreach</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-month">Month 2</div>
+            <div class="tl-event-title">10 pilot workflows live — first ROI data</div>
+            <div class="tl-event-desc">10 pilot clients have their first 2 workflows deployed. Begin collecting time-saved and error-reduction metrics. Build the ROI report template.</div>
+            <div class="tl-tags">
+              <span class="tl-tag g">Milestone</span>
+              <span class="tl-tag r">Service</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-month">Month 3</div>
+            <div class="tl-event-title">First managed retainers signed — ₹2.7L MRR target</div>
+            <div class="tl-event-desc">Present ROI reports. Convert 15 of 30 pilots to ₹12,000–₹25,000/mo managed retainers. Document the free-to-paid conversion playbook.</div>
+            <div class="tl-tags">
+              <span class="tl-tag g">Revenue</span>
+              <span class="tl-tag r">Conversion</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-month">Month 4–5</div>
+            <div class="tl-event-title">Marketplace MVP build + soft launch</div>
+            <div class="tl-event-desc">Engineering builds the in-app service marketplace. Soft-launch "Request a Plug" and "Audit My Workflow" to existing managed clients. Collect feedback.</div>
+            <div class="tl-tags">
+              <span class="tl-tag b">Product</span>
+              <span class="tl-tag k">Beta</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-month">Month 6</div>
+            <div class="tl-event-title">Industry Packs launch + CA partnership programme</div>
+            <div class="tl-event-desc">D2C, Manufacturing, and CA/Tax workflow packs go live. Begin CA association partnership conversations — target 10 signed referral agreements.</div>
+            <div class="tl-tags">
+              <span class="tl-tag r">Product</span>
+              <span class="tl-tag g">Partnerships</span>
+            </div>
+          </div>
+          <div class="tl-item" style="padding-bottom:0">
+            <div class="tl-dot"></div>
+            <div class="tl-month">Month 7–8</div>
+            <div class="tl-event-title">Marketplace public launch + affiliate programme</div>
+            <div class="tl-event-desc">Full marketplace opens to all users. Launch affiliate/referral programme for existing managed clients. Target: 50 managed clients by Month 8 = ₹9L MRR from services.</div>
+            <div class="tl-tags">
+              <span class="tl-tag g">Milestone</span>
+              <span class="tl-tag r">Launch</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-30);margin-bottom:1.75rem">Phase 03</div>
+        <div class="timeline">
+          <div class="tl-item future">
+            <div class="tl-dot open"></div>
+            <div class="tl-month">Month 9</div>
+            <div class="tl-event-title">Partner certification programme design</div>
+            <div class="tl-event-desc">Design the partner certification curriculum. Build the partner dashboard and co-branded portal. Recruit first 10 beta partners from existing freelancers and agencies.</div>
+            <div class="tl-tags">
+              <span class="tl-tag k">Partner</span>
+              <span class="tl-tag b">Build</span>
+            </div>
+          </div>
+          <div class="tl-item future">
+            <div class="tl-dot open"></div>
+            <div class="tl-month">Month 10</div>
+            <div class="tl-event-title">First 10 certified partners live</div>
+            <div class="tl-event-desc">10 partners certified and active. Begin assigning new Guided Setup enquiries to partners. Partners now handling 20–30% of incoming service demand.</div>
+            <div class="tl-tags">
+              <span class="tl-tag k">Partner</span>
+              <span class="tl-tag g">Milestone</span>
+            </div>
+          </div>
+          <div class="tl-item future">
+            <div class="tl-dot open"></div>
+            <div class="tl-month">Month 11</div>
+            <div class="tl-event-title">Partner marketplace goes live</div>
+            <div class="tl-event-desc">Clients can browse and book certified partners directly. Partners get their own public profiles. viaSocket earns royalties on all partner-delivered engagements — passive, scalable revenue.</div>
+            <div class="tl-tags">
+              <span class="tl-tag k">Ecosystem</span>
+              <span class="tl-tag r">Launch</span>
+            </div>
+          </div>
+          <div class="tl-item future" style="padding-bottom:0">
+            <div class="tl-dot open"></div>
+            <div class="tl-month">Month 12</div>
+            <div class="tl-event-title">Full repositioning complete — Year 2 planning</div>
+            <div class="tl-event-desc">viaSocket is India's only full-stack automation solution. 50+ internal managed clients. 50+ certified partners. Two compounding revenue streams. Begin planning geographic expansion and enterprise vertical.</div>
+            <div class="tl-tags">
+              <span class="tl-tag g">Target</span>
+              <span class="tl-tag r">Vision</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ KPIs ═══════════════════ -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="text-center fade-up" style="margin-bottom:3rem">
+      <div class="eyebrow">Success Metrics</div>
+      <h2 class="h2">How we know<br><span class="text-red">it's working.</span></h2>
+      <p class="lead" style="max-width:520px;margin:.9rem auto 0">Each phase has clear, measurable targets. These are not vanity metrics — they are the leading indicators of the repositioning succeeding.</p>
+    </div>
+    <div class="kpi-grid fade-up d1">
+      <div class="kpi-card">
+        <div class="kpi-phase">Phase 01 KPIs · Months 1–3</div>
+        <div class="kpi-target">₹2.7L</div>
+        <div class="kpi-label">Monthly Service Revenue target by Month 3</div>
+        <div class="kpi-breakdown">
+          <strong>30</strong> pilot MSMEs onboarded to free workflows<br>
+          <strong>50%</strong> conversion to paid managed retainer<br>
+          <strong>₹18,000</strong> avg. monthly retainer per client<br>
+          <strong>94%</strong> managed client retention (target)
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-phase">Phase 02 KPIs · Months 4–8</div>
+        <div class="kpi-target">₹9L</div>
+        <div class="kpi-label">Monthly Service Revenue target by Month 8</div>
+        <div class="kpi-breakdown">
+          <strong>50</strong> active managed clients<br>
+          <strong>1,000+</strong> marketplace service transactions/month<br>
+          <strong>20</strong> CA/trade association referral partners<br>
+          <strong>3</strong> industry workflow packs live
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-phase">Phase 03 KPIs · Months 9–12</div>
+        <div class="kpi-target">50+</div>
+        <div class="kpi-label">Certified Partner Network size by Month 12</div>
+        <div class="kpi-breakdown">
+          <strong>₹15L+</strong> blended MRR (platform + services + royalties)<br>
+          <strong>50+</strong> partners handling 40% of service volume<br>
+          <strong>15–20%</strong> royalty earned passively per partner deal<br>
+          <strong>Year 2</strong> foundation for geographic expansion
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ RISK REGISTER ═══════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up" style="margin-bottom:2.5rem">
+      <div class="eyebrow">Risk Register</div>
+      <h2 class="h2">Risks we've anticipated<br><span class="text-red">and mitigated.</span></h2>
+    </div>
+    <div class="fade-up d1">
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th style="min-width:200px">Risk</th>
+            <th>Level</th>
+            <th>Impact</th>
+            <th>Mitigation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Pilot-to-paid conversion rate below 50%</strong></td>
+            <td><span class="risk-level risk-md">Medium</span></td>
+            <td>Phase 01 revenue target missed</td>
+            <td>Run 50 pilots (not 30) to compensate for lower conversion. Focus ROI reports on the 2 most quantifiable metrics: hours saved and errors eliminated.</td>
+          </tr>
+          <tr>
+            <td><strong>Engineering capacity bottleneck</strong></td>
+            <td><span class="risk-level risk-hi">High</span></td>
+            <td>Delivery delays, client dissatisfaction</td>
+            <td>Cap pilot cohorts at 10/month initially. Hire third engineer in Month 2 contingent on Month 1 conversion data. Triage workflows by complexity before committing.</td>
+          </tr>
+          <tr>
+            <td><strong>Marketplace low adoption in Phase 02</strong></td>
+            <td><span class="risk-level risk-md">Medium</span></td>
+            <td>One-time service revenue delayed</td>
+            <td>Seed marketplace with managed clients first (they already trust us). Launch with guaranteed 48hr SLA on express services — creates differentiation from freelance alternatives.</td>
+          </tr>
+          <tr>
+            <td><strong>Partner quality control in Phase 03</strong></td>
+            <td><span class="risk-level risk-hi">High</span></td>
+            <td>Brand damage if partners deliver poorly</td>
+            <td>Stringent certification exam + practical assessment. Monthly quality scores tracked via client NPS. 3-strikes-and-removal policy. Co-review all partner deliverables in first 30 days.</td>
+          </tr>
+          <tr>
+            <td><strong>Competitor response (Zapier, Make)</strong></td>
+            <td><span class="risk-level risk-lo">Low</span></td>
+            <td>Price war on platform tier</td>
+            <td>Services layer is not replicable in months by product companies. Indian market depth (WhatsApp, GST, UPI) creates further moat. First-mover in services creates client lock-in before competitors react.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ THE ASK ═══════════════════ -->
+<section class="section ask-section">
+  <div class="ask-inner fade-up">
+    <div class="eyebrow" style="color:var(--red);margin-bottom:1.25rem">What We Need to Start</div>
+    <h2 class="h2" style="color:#fff;margin-bottom:.75rem">Three things to<br><span style="color:var(--red)">activate Phase 01.</span></h2>
+    <p style="color:rgba(255,255,255,.4);font-size:1rem;line-height:1.75;max-width:580px;margin:0 auto">
+      The strategy is defined. The market is ready. The model has been validated in analogous markets. We need three inputs to begin.
+    </p>
+
+    <div class="ask-list">
+      <div class="ask-item">
+        <div class="ask-item-num">₹15L</div>
+        <div class="ask-item-label">Services Team Budget</div>
+        <div class="ask-item-desc">2 automation engineers + 1 account manager for the first 6 months. Covers salaries, tooling, and the cost of 30 free pilot engagements.</div>
+      </div>
+      <div class="ask-item">
+        <div class="ask-item-num">30</div>
+        <div class="ask-item-label">Pilot MSME Introductions</div>
+        <div class="ask-item-desc">Warm introductions from the founding team's network to 30 MSME owners in D2C, manufacturing, or CA/tax. Reduces outbound CAC to near-zero in Phase 01.</div>
+      </div>
+      <div class="ask-item">
+        <div class="ask-item-num">Q1</div>
+        <div class="ask-item-label">Go / No-Go Decision</div>
+        <div class="ask-item-desc">A clear green light to begin hiring, outreach, and the free pilot programme. With a Q1 start, Phase 01 milestones are achievable by Month 3 and Phase 02 can begin on schedule.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
+      <a href="/benefits" class="btn-red btn-lg">See the Full Business Case →</a>
+      <a href="/pricing" class="btn-outline btn-lg" style="border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.7)">View Pricing Model</a>
+    </div>
+    <p style="font-size:.78rem;color:rgba(255,255,255,.2);margin-top:1.5rem">
+      Execution plan version 1.0 · viaSocket Internal Strategy Document
+    </p>
+  </div>
+</section>
+
+{% endblock %}

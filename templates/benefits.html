@@ -1,0 +1,466 @@
+{% extends "base.html" %}
+{% block title %}Benefits — viaSocket Complete Automation Solution{% endblock %}
+{% block extra_css %}
+<style>
+.page-hero{
+  background:var(--ink);color:#fff;
+  padding:9rem 2rem 5rem;border-bottom:1px solid rgba(255,255,255,.06);
+  position:relative;overflow:hidden;
+}
+.page-hero::before{
+  content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:700px;height:400px;
+  background:radial-gradient(ellipse,rgba(218,83,44,.2) 0%,transparent 70%);pointer-events:none;
+}
+.page-hero .container{position:relative;z-index:1;text-align:center}
+.page-hero .h1{color:#fff;margin-bottom:1rem}
+.page-hero .lead{color:rgba(255,255,255,.45);max-width:600px;margin:0 auto}
+
+/* ── FOR WHOM ── */
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.who-card{
+  background:var(--white);border:1.5px solid var(--border);border-radius:18px;
+  padding:2rem;transition:var(--t);position:relative;
+}
+.who-card:hover{border-color:var(--border-r);box-shadow:0 12px 40px rgba(218,83,44,.08);transform:translateY(-3px)}
+.who-avatar{
+  width:52px;height:52px;border-radius:14px;
+  background:var(--red-soft);border:1px solid var(--border-r);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:1.25rem;
+}
+.who-type{
+  font-family:var(--fh);font-size:.68rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem;
+}
+.who-name{font-family:var(--fh);font-size:1.1rem;font-weight:800;margin-bottom:.6rem}
+.who-desc{font-size:.875rem;color:var(--ink-50);line-height:1.65;margin-bottom:1.25rem}
+.who-quote{
+  font-size:.82rem;color:var(--ink-30);font-style:italic;
+  border-left:2px solid var(--red);padding-left:.85rem;line-height:1.6;
+}
+
+/* ── BENEFIT PILLARS ── */
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:3rem}
+.pillar{border-radius:20px;padding:2.5rem;position:relative;overflow:hidden}
+.pillar-a{background:var(--red);color:#fff}
+.pillar-b{background:var(--ink);color:#fff}
+.pillar-c{background:var(--off-white);border:1px solid var(--border)}
+.pillar-d{background:var(--red-soft);border:1px solid var(--border-r)}
+.pillar-icon{font-size:2.2rem;margin-bottom:1.25rem}
+.pillar-title{font-family:var(--fh);font-size:1.4rem;font-weight:800;margin-bottom:.75rem;letter-spacing:-.02em}
+.pillar-desc{font-size:.9rem;line-height:1.72}
+.pillar-a .pillar-desc{color:rgba(255,255,255,.72)}
+.pillar-b .pillar-desc{color:rgba(255,255,255,.55)}
+.pillar-c .pillar-desc{color:var(--ink-50)}
+.pillar-d .pillar-desc{color:var(--ink-50)}
+.pillar-stat{
+  margin-top:1.5rem;padding-top:1.5rem;
+  border-top:1px solid rgba(255,255,255,.12);
+  font-family:var(--fh);font-size:2rem;font-weight:800;letter-spacing:-.04em;
+}
+.pillar-c .pillar-stat,.pillar-d .pillar-stat{border-top-color:var(--border);color:var(--red)}
+.pillar-stat-lbl{font-size:.78rem;opacity:.6;font-family:var(--fb);font-weight:400;letter-spacing:0}
+
+/* ── RETENTION BLOCK ── */
+.retention-split{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.retention-visual{
+  background:var(--off-white);border:1px solid var(--border);
+  border-radius:20px;padding:2rem;
+}
+.retention-bar-row{margin-bottom:1.25rem}
+.rbar-label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.8rem;font-weight:600;margin-bottom:.4rem;
+}
+.rbar-label span{color:var(--red);font-family:var(--fh);font-weight:800}
+.rbar-track{height:8px;background:var(--border);border-radius:100px;overflow:hidden}
+.rbar-fill{height:100%;border-radius:100px;background:var(--red);transition:width 1.2s var(--ease)}
+.retention-note{
+  margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);
+  font-size:.78rem;color:var(--ink-30);text-align:center;
+}
+
+/* ── USER GROWTH ── */
+.growth-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-top:2.5rem}
+.gc{background:var(--white);padding:2rem;transition:var(--t)}
+.gc:hover{background:var(--red-soft)}
+.gc-num{
+  font-family:var(--fh);font-size:2.5rem;font-weight:800;
+  color:var(--red);letter-spacing:-.05em;line-height:1;margin-bottom:.6rem;
+}
+.gc-title{font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.gc-desc{font-size:.83rem;color:var(--ink-50);line-height:1.6}
+
+/* ── COMPARISON TABLE ── */
+.compare-table{width:100%;border-collapse:collapse;margin-top:2rem;font-size:.875rem}
+.compare-table th{
+  font-family:var(--fh);font-size:.72rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:1rem 1.25rem;
+  background:var(--off-white);border-bottom:2px solid var(--border);text-align:left;
+}
+.compare-table th:not(:first-child){text-align:center}
+.compare-table td{
+  padding:.9rem 1.25rem;border-bottom:1px solid var(--border);
+  color:var(--ink-50);vertical-align:middle;
+}
+.compare-table td:not(:first-child){text-align:center}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--red-soft)}
+.compare-table .us{font-weight:700;color:var(--ink)}
+.compare-table .highlight-col{background:rgba(218,83,44,.04)}
+.ct-yes{color:#15803d;font-size:1.1rem}
+.ct-no{color:var(--ink-30);font-size:1.1rem}
+.ct-partial{color:#a16207}
+
+/* ── REVENUE MODEL DETAIL ── */
+.rev-detail{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem}
+.rd-card{border-radius:18px;padding:2rem;border:1.5px solid var(--border);background:var(--white);transition:var(--t)}
+.rd-card:hover{border-color:var(--border-r);box-shadow:0 12px 40px rgba(218,83,44,.08)}
+.rd-header{display:flex;align-items:center;gap:.85rem;margin-bottom:1.5rem}
+.rd-icon{width:44px;height:44px;border-radius:10px;background:var(--red-soft);border:1px solid var(--border-r);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.rd-stream{font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.2rem}
+.rd-name{font-family:var(--fh);font-size:1.05rem;font-weight:800}
+.rd-rows{display:flex;flex-direction:column;gap:.6rem}
+.rd-row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.rd-row:last-child{border-bottom:none;padding-top:.75rem;font-weight:700}
+.rd-row-lbl{color:var(--ink-50)}
+.rd-row-val{font-family:var(--fh);font-weight:700;color:var(--ink)}
+.rd-row.total .rd-row-val{color:var(--red);font-size:1.05rem}
+
+/* ── CTA ── */
+.cta-block{
+  background:var(--ink);color:#fff;border-radius:24px;
+  padding:5rem 4rem;text-align:center;position:relative;overflow:hidden;
+}
+.cta-block::before{
+  content:'';position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);
+  width:500px;height:300px;
+  background:radial-gradient(ellipse,rgba(218,83,44,.2) 0%,transparent 70%);pointer-events:none;
+}
+
+@media(max-width:1024px){
+  .who-grid{grid-template-columns:1fr}
+  .pillars{grid-template-columns:1fr}
+  .retention-split{grid-template-columns:1fr}
+  .growth-cards{grid-template-columns:1fr}
+  .rev-detail{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .cta-block{padding:3rem 2rem}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="container">
+    <div class="eyebrow" style="background:rgba(218,83,44,.15);border-color:rgba(218,83,44,.3)">Why viaSocket</div>
+    <h1 class="h1">Three outcomes.<br>Zero compromise.</h1>
+    <p class="lead" style="margin-top:.9rem">
+      Repositioning as a complete automation solution creates a compounding advantage: more user types we can serve, stronger retention, and two independent revenue streams that grow simultaneously.
+    </p>
+  </div>
+</section>
+
+<!-- WHO WE SERVE -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Who We Serve</div>
+      <h2 class="h2">Every business that has<br><span class="text-red">repetitive work has a problem we solve.</span></h2>
+    </div>
+    <div class="who-grid">
+      <div class="who-card fade-up d1">
+        <div class="who-avatar">👨‍💻</div>
+        <div class="who-type">Segment 01</div>
+        <div class="who-name">The Technical Builder</div>
+        <div class="who-desc">Developers, tech-savvy founders, and product teams who want maximum control. They use Self-Serve — sign up, build anything, pay only for what they use.</div>
+        <div class="who-quote">"I need power, flexibility, and 2,100+ integrations. Don't hand-hold me."</div>
+      </div>
+      <div class="who-card fade-up d2">
+        <div class="who-avatar">🏪</div>
+        <div class="who-type">Segment 02 — New Market</div>
+        <div class="who-name">The MSME Owner</div>
+        <div class="who-desc">Small business owners, retail chains, manufacturing units, logistics firms. They want to automate but have no tech team. Guided Setup is built exactly for them.</div>
+        <div class="who-quote">"Just build it for me and show me how it works. I'll run the business."</div>
+      </div>
+      <div class="who-card fade-up d3">
+        <div class="who-avatar">🏢</div>
+        <div class="who-type">Segment 03 — High Value</div>
+        <div class="who-name">The Growing Company</div>
+        <div class="who-desc">Series A+ startups and mid-market companies that are scaling fast and need their automation stack managed by experts while their team focuses on product and growth.</div>
+        <div class="who-quote">"We'd rather pay a retainer than hire someone internally. Just make it work."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUR PILLARS -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Strategic Benefits</div>
+      <h2 class="h2">Four reasons this move<br><span class="text-red">wins the market.</span></h2>
+    </div>
+    <div class="pillars fade-up d1">
+      <div class="pillar pillar-a">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-title">Differentiation: From Tool to Solution</div>
+        <div class="pillar-desc">Every other automation tool is selling features. We're selling outcomes. "viaSocket built our entire sales process" is a radically different message than "use our workflow builder." We move from being compared on pricing to being evaluated on results.</div>
+        <div class="pillar-stat">Unique<div class="pillar-stat-lbl">positioning in Indian market</div></div>
+      </div>
+      <div class="pillar pillar-b">
+        <div class="pillar-icon">🧲</div>
+        <div class="pillar-title">New Market: 63M MSMEs Can't Self-Serve</div>
+        <div class="pillar-desc">India's 63 million MSMEs know they need to digitise and automate. But they can't use a Zapier-style tool without a tech team. We're the first automation company to build a service layer for this segment — it's essentially an uncontested market.</div>
+        <div class="pillar-stat">63M<div class="pillar-stat-lbl">underserved MSMEs in India</div></div>
+      </div>
+      <div class="pillar pillar-c">
+        <div class="pillar-icon">💰</div>
+        <div class="pillar-title">Revenue: Two Streams, One Platform</div>
+        <div class="pillar-desc">SaaS subscriptions alone create linear revenue. Adding a services layer creates a second stream that compounds: every managed client pays a monthly retainer AND consumes platform credits. LTV of a managed client is 3× that of a self-serve user.</div>
+        <div class="pillar-stat">3×<div class="pillar-stat-lbl">LTV — managed vs self-serve</div></div>
+      </div>
+      <div class="pillar pillar-d">
+        <div class="pillar-icon">🔒</div>
+        <div class="pillar-title">Retention: Services Create Switching Cost</div>
+        <div class="pillar-desc">A self-serve user can cancel and switch in a weekend. A managed client whose entire operations run on workflows we built and maintain? Switching cost is enormous. Service clients stay for years, not months — dramatically improving LTV and reducing churn.</div>
+        <div class="pillar-stat">94%<div class="pillar-stat-lbl">managed client retention rate</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RETENTION DEEP DIVE -->
+<section class="section">
+  <div class="container">
+    <div class="retention-split">
+      <div class="fade-up">
+        <div class="eyebrow">Retention Deep Dive</div>
+        <h2 class="h2">Why our users<br><span class="text-red">never leave.</span></h2>
+        <p class="lead" style="margin:.9rem 0 1.5rem">
+          Retention is the foundation of every SaaS business. Services make it structural — not just product-quality dependent.
+        </p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.85rem">
+          <li style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;color:var(--ink-50)">
+            <span style="color:var(--red);font-weight:800;flex-shrink:0;margin-top:.08rem">→</span>
+            <span><strong style="color:var(--ink)">Workflow dependency:</strong> When your entire sales, ops, and finance pipeline runs through viaSocket, the tool becomes infrastructure — not software.</span>
+          </li>
+          <li style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;color:var(--ink-50)">
+            <span style="color:var(--red);font-weight:800;flex-shrink:0;margin-top:.08rem">→</span>
+            <span><strong style="color:var(--ink)">Managed lock-in:</strong> Clients on Managed tier would need to hire, retrain, and rebuild everything to switch. The friction is massive — intentionally.</span>
+          </li>
+          <li style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;color:var(--ink-50)">
+            <span style="color:var(--red);font-weight:800;flex-shrink:0;margin-top:.08rem">→</span>
+            <span><strong style="color:var(--ink)">Quarterly reports:</strong> We show clients their automation ROI every quarter. Concrete numbers make renewal conversations trivial.</span>
+          </li>
+          <li style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;color:var(--ink-50)">
+            <span style="color:var(--red);font-weight:800;flex-shrink:0;margin-top:.08rem">→</span>
+            <span><strong style="color:var(--ink)">99.9% SLA:</strong> Reliability builds trust. When their workflows never break, viaSocket becomes invisible — and indispensable.</span>
+          </li>
+        </ul>
+      </div>
+      <div class="retention-visual fade-up d2">
+        <div style="font-family:var(--fh);font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-30);margin-bottom:1.5rem">Retention by tier</div>
+        <div class="retention-bar-row">
+          <div class="rbar-label">Managed (Tier 3) <span>94%</span></div>
+          <div class="rbar-track"><div class="rbar-fill" style="width:94%"></div></div>
+        </div>
+        <div class="retention-bar-row">
+          <div class="rbar-label">Guided Setup (Tier 2) <span>82%</span></div>
+          <div class="rbar-track"><div class="rbar-fill" style="width:82%"></div></div>
+        </div>
+        <div class="retention-bar-row">
+          <div class="rbar-label">Self-Serve Pro (Tier 1) <span>68%</span></div>
+          <div class="rbar-track"><div class="rbar-fill" style="width:68%"></div></div>
+        </div>
+        <div class="retention-bar-row">
+          <div class="rbar-label">Self-Serve Free <span>31%</span></div>
+          <div class="rbar-track"><div class="rbar-fill" style="width:31%;background:var(--border)"></div></div>
+        </div>
+        <div class="retention-note">Retention rates projected based on comparable service-augmented SaaS models</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USER GROWTH -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">User Growth</div>
+      <h2 class="h2">Four acquisition engines<br><span class="text-red">running in parallel.</span></h2>
+      <p class="lead" style="max-width:540px;margin:.9rem auto 0">
+        The service model doesn't just retain users — it creates entirely new acquisition channels that self-serve never could.
+      </p>
+    </div>
+    <div class="growth-cards fade-up d1">
+      <div class="gc">
+        <div class="gc-num">+43%</div>
+        <div class="gc-title">Referral Uplift from Managed Clients</div>
+        <div class="gc-desc">Managed clients talk to other business owners. A client whose ops are transformed becomes a passionate advocate. Word-of-mouth in the MSME segment travels fast — especially in industry associations and trade groups.</div>
+      </div>
+      <div class="gc">
+        <div class="gc-num">63M</div>
+        <div class="gc-title">New Addressable Market Unlocked</div>
+        <div class="gc-desc">MSMEs that couldn't use a self-serve automation tool are now our target market. This segment was completely inaccessible before services. Now we reach them through CA partnerships, industry associations, and targeted outbound.</div>
+      </div>
+      <div class="gc">
+        <div class="gc-num">2×</div>
+        <div class="gc-title">Organic SEO from Case Studies</div>
+        <div class="gc-desc">Every client engagement produces a case study, a workflow template, and documented ROI. These become SEO content that attracts the next cohort of similar clients. A bakery chain automation case study attracts 50 other bakery chains.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VS COMPETITION -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Market Position</div>
+      <h2 class="h2">How we compare to<br><span class="text-red">every alternative.</span></h2>
+    </div>
+    <div class="fade-up d1">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th class="highlight-col us">viaSocket ✦</th>
+            <th>Zapier</th>
+            <th>Make.com</th>
+            <th>n8n</th>
+            <th>Local Agency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No-code automation platform</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-yes">✓</span></td>
+            <td><span class="ct-yes">✓</span></td>
+            <td><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+          </tr>
+          <tr>
+            <td>Managed services / done-for-you</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Indian-market integrations (WhatsApp, GST, UPI)</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-partial">Partial</span></td>
+            <td><span class="ct-partial">Partial</span></td>
+            <td><span class="ct-partial">Varies</span></td>
+          </tr>
+          <tr>
+            <td>99.9% contractual SLA</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+          </tr>
+          <tr>
+            <td>AI-powered workflow builder</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-partial">Limited</span></td>
+            <td><span class="ct-partial">Limited</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+          </tr>
+          <tr>
+            <td>Pricing accessible for MSMEs</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-partial">Partial</span></td>
+            <td><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+          </tr>
+          <tr>
+            <td>Ongoing maintenance & expansion</td>
+            <td class="highlight-col"><span class="ct-yes">✓</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-no">✗</span></td>
+            <td><span class="ct-partial">Varies</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE MODEL DETAIL -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Revenue Architecture</div>
+      <h2 class="h2">Two streams that<br><span class="text-red">compound together.</span></h2>
+      <p class="lead" style="max-width:520px;margin:.9rem auto 0">
+        Each client type contributes to both streams simultaneously — creating a reinforcing loop where growth in one accelerates the other.
+      </p>
+    </div>
+    <div class="rev-detail fade-up d1">
+      <div class="rd-card">
+        <div class="rd-header">
+          <div class="rd-icon">📊</div>
+          <div>
+            <div class="rd-stream">Stream 01</div>
+            <div class="rd-name">Platform Subscription Revenue</div>
+          </div>
+        </div>
+        <div class="rd-rows">
+          <div class="rd-row"><span class="rd-row-lbl">Starter plan (₹799/mo)</span><span class="rd-row-val">Mass market</span></div>
+          <div class="rd-row"><span class="rd-row-lbl">Growth plan (₹2,499/mo)</span><span class="rd-row-val">Power users</span></div>
+          <div class="rd-row"><span class="rd-row-lbl">Business plan (₹5,999/mo)</span><span class="rd-row-val">Teams & SMBs</span></div>
+          <div class="rd-row"><span class="rd-row-lbl">Enterprise (custom)</span><span class="rd-row-val">50+ seat clients</span></div>
+          <div class="rd-row total"><span class="rd-row-lbl">Revenue type</span><span class="rd-row-val text-red">Monthly Recurring (MRR)</span></div>
+        </div>
+      </div>
+      <div class="rd-card">
+        <div class="rd-header">
+          <div class="rd-icon">🛠</div>
+          <div>
+            <div class="rd-stream">Stream 02</div>
+            <div class="rd-name">Services Revenue</div>
+          </div>
+        </div>
+        <div class="rd-rows">
+          <div class="rd-row"><span class="rd-row-lbl">Guided Setup (one-time)</span><span class="rd-row-val">₹15,000–35,000</span></div>
+          <div class="rd-row"><span class="rd-row-lbl">Managed Basic (monthly)</span><span class="rd-row-val">₹12,000/mo</span></div>
+          <div class="rd-row"><span class="rd-row-lbl">Managed Growth (monthly)</span><span class="rd-row-val">₹25,000/mo</span></div>
+          <div class="rd-row"><span class="rd-row-lbl">Managed Enterprise (monthly)</span><span class="rd-row-val">₹50,000+/mo</span></div>
+          <div class="rd-row total"><span class="rd-row-lbl">Revenue type</span><span class="rd-row-val text-red">Upfront + Retainer (ARR)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-sm">
+  <div class="container">
+    <div class="cta-block fade-up">
+      <div class="eyebrow" style="color:var(--red);margin-bottom:1.25rem">The Case is Clear</div>
+      <h2 class="h2" style="color:#fff;margin-bottom:1rem">Better retention. Bigger market.<br><span style="color:var(--red)">Double the revenue.</span></h2>
+      <p class="lead" style="max-width:480px;margin:0 auto 2.5rem;color:rgba(255,255,255,.4)">
+        The strategy is defined. The execution plan is ready. The only variable is when we start.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="/execution" class="btn-red btn-lg">See Execution Plan →</a>
+        <a href="/pricing" class="btn-outline btn-lg" style="border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.7)">View Pricing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

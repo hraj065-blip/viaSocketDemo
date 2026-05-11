@@ -1,0 +1,503 @@
+{% extends "base.html" %}
+{% block title %}Pricing — viaSocket Complete Automation Solution{% endblock %}
+{% block extra_css %}
+<style>
+.page-hero{
+  background:var(--off-white);border-bottom:1px solid var(--border);
+  padding:9rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;
+}
+.page-hero::before{
+  content:'';position:absolute;top:-80px;right:-60px;
+  width:450px;height:450px;
+  background:radial-gradient(circle,rgba(218,83,44,.1) 0%,transparent 70%);pointer-events:none;
+}
+.page-hero::after{
+  content:'';position:absolute;bottom:-40px;left:-30px;
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(218,83,44,.06) 0%,transparent 70%);pointer-events:none;
+}
+
+/* ── TOGGLE ── */
+.billing-toggle{
+  display:inline-flex;align-items:center;gap:.75rem;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:100px;padding:.35rem;margin-top:2rem;
+}
+.toggle-opt{
+  padding:.45rem 1.2rem;border-radius:100px;cursor:pointer;
+  font-size:.875rem;font-weight:600;font-family:var(--fh);
+  transition:var(--t);color:var(--ink-50);
+}
+.toggle-opt.active{background:var(--red);color:#fff}
+.billing-note{
+  font-size:.78rem;color:var(--ink-30);text-align:center;margin-top:.75rem;
+}
+.billing-note span{color:var(--red);font-weight:700}
+
+/* ── PLATFORM PLANS ── */
+.plans-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:3rem}
+.plan-card{
+  border:1.5px solid var(--border);border-radius:18px;
+  padding:2rem 1.5rem;background:var(--white);
+  transition:var(--t);position:relative;overflow:hidden;
+}
+.plan-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--border);transition:var(--t);
+}
+.plan-card:hover{border-color:var(--border-r);box-shadow:0 12px 40px rgba(218,83,44,.09);transform:translateY(-3px)}
+.plan-card:hover::before,.plan-card.pop::before{background:var(--red)}
+.plan-card.pop{border-color:var(--red)}
+.plan-pop{
+  position:absolute;top:1rem;right:1rem;
+  background:var(--red);color:#fff;
+  font-size:.62rem;font-weight:800;font-family:var(--fh);
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:100px;
+}
+.plan-name{font-family:var(--fh);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem}
+.plan-price{
+  font-family:var(--fh);font-size:2.2rem;font-weight:800;
+  letter-spacing:-.04em;color:var(--ink);line-height:1;margin-bottom:.2rem;
+}
+.plan-price small{font-size:.9rem;color:var(--ink-30);font-weight:400}
+.plan-annual{font-size:.75rem;color:var(--ink-30);margin-bottom:1.25rem;min-height:1.2rem}
+.plan-desc{font-size:.82rem;color:var(--ink-50);line-height:1.6;margin-bottom:1.5rem;min-height:60px}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.75rem}
+.plan-feats li{display:flex;align-items:flex-start;gap:.5rem;font-size:.8rem;color:var(--ink-50)}
+.plan-feats li::before{content:'✓';color:var(--red);font-weight:800;flex-shrink:0}
+.plan-feats li.dim::before{content:'–';color:var(--border);font-weight:400}
+.plan-feats li.dim{color:var(--ink-30)}
+.plan-btn{
+  display:block;text-align:center;padding:.7rem;border-radius:100px;
+  font-size:.875rem;font-weight:700;font-family:var(--fh);transition:var(--t);
+}
+.plan-btn-red{background:var(--red);color:#fff}
+.plan-btn-red:hover{background:var(--red-dark);box-shadow:0 8px 24px rgba(218,83,44,.3)}
+.plan-btn-ol{border:1.5px solid var(--border);color:var(--ink)}
+.plan-btn-ol:hover{border-color:var(--red);color:var(--red)}
+
+/* ── SERVICES SECTION ── */
+.services-intro{
+  text-align:center;padding:5.5rem 2rem 2rem;
+}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.svc-card{
+  border-radius:20px;padding:2.5rem;border:1.5px solid var(--border);
+  background:var(--white);transition:var(--t);position:relative;overflow:hidden;
+}
+.svc-card.svc-feat{border-color:var(--red)}
+.svc-card:hover{border-color:var(--border-r);box-shadow:0 16px 48px rgba(218,83,44,.1);transform:translateY(-3px)}
+.svc-pop{
+  position:absolute;top:1.25rem;right:1.25rem;
+  background:var(--red);color:#fff;font-size:.62rem;font-weight:800;
+  font-family:var(--fh);letter-spacing:.08em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:100px;
+}
+.svc-tier{font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem}
+.svc-name{font-family:var(--fh);font-size:1.5rem;font-weight:800;letter-spacing:-.025em;margin-bottom:.5rem}
+.svc-target{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.75rem;font-weight:600;color:var(--ink-30);
+  background:var(--off-white);border:1px solid var(--border);
+  padding:.22rem .6rem;border-radius:100px;margin-bottom:1rem;font-family:var(--fh);
+}
+.svc-price{
+  font-family:var(--fh);font-size:1.8rem;font-weight:800;
+  letter-spacing:-.04em;color:var(--ink);margin-bottom:.2rem;
+}
+.svc-price-note{font-size:.78rem;color:var(--ink-30);margin-bottom:1.5rem}
+.svc-desc{font-size:.875rem;color:var(--ink-50);line-height:1.68;margin-bottom:1.5rem}
+.svc-includes{
+  font-family:var(--fh);font-size:.65rem;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-30);margin-bottom:.7rem;
+}
+.svc-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.75rem}
+.svc-list li{display:flex;align-items:flex-start;gap:.55rem;font-size:.83rem;color:var(--ink-50)}
+.svc-list li::before{content:'→';color:var(--red);font-weight:800;flex-shrink:0}
+.svc-btn{
+  display:block;text-align:center;padding:.8rem;border-radius:100px;
+  font-size:.875rem;font-weight:700;font-family:var(--fh);transition:var(--t);
+}
+.svc-btn-red{background:var(--red);color:#fff}
+.svc-btn-red:hover{background:var(--red-dark);box-shadow:0 8px 24px rgba(218,83,44,.3)}
+.svc-btn-ol{border:1.5px solid var(--border);color:var(--ink)}
+.svc-btn-ol:hover{border-color:var(--red);color:var(--red)}
+
+/* ── COMPARE TABLE ── */
+.full-compare{width:100%;border-collapse:collapse;margin-top:2rem;font-size:.83rem}
+.full-compare th{
+  font-family:var(--fh);font-size:.68rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:.9rem 1.25rem;
+  background:var(--off-white);border-bottom:2px solid var(--border);text-align:left;
+}
+.full-compare th:not(:first-child){text-align:center}
+.full-compare td{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);color:var(--ink-50);vertical-align:middle}
+.full-compare td:not(:first-child){text-align:center}
+.full-compare .cat-row td{
+  background:var(--ink);color:#fff;font-family:var(--fh);
+  font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:.6rem 1.25rem;
+}
+.full-compare tr:hover:not(.cat-row) td{background:var(--red-soft)}
+.ck{color:#15803d;font-size:1rem}.cx{color:var(--border);font-size:1rem}
+.hi{background:rgba(218,83,44,.04)!important}
+
+/* ── FAQ ── */
+.faq{max-width:720px;margin:2.5rem auto 0}
+.faq-item{border-bottom:1px solid var(--border);padding:1.25rem 0}
+.faq-q{
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;font-weight:600;font-size:.95rem;gap:1rem;
+}
+.faq-q .icon{
+  width:28px;height:28px;border-radius:50%;background:var(--off-white);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;flex-shrink:0;transition:var(--t);color:var(--red);
+}
+.faq-a{font-size:.875rem;color:var(--ink-50);line-height:1.72;margin-top:.85rem;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .icon{background:var(--red-soft);transform:rotate(45deg)}
+
+/* ── SLA BANNER ── */
+.sla-banner{
+  background:var(--ink);color:#fff;border-radius:20px;
+  padding:2.5rem;display:grid;grid-template-columns:1fr auto;
+  gap:2rem;align-items:center;margin-top:3rem;
+}
+.sla-banner-text h3{font-family:var(--fh);font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:.4rem}
+.sla-banner-text p{font-size:.875rem;color:rgba(255,255,255,.4)}
+.sla-metrics{display:flex;gap:2rem;flex-shrink:0}
+.sla-m{text-align:center}
+.sla-m-val{font-family:var(--fh);font-size:1.4rem;font-weight:800;color:var(--red);letter-spacing:-.03em}
+.sla-m-lbl{font-size:.7rem;color:rgba(255,255,255,.3);margin-top:.15rem}
+
+@media(max-width:1024px){
+  .plans-grid{grid-template-columns:repeat(2,1fr)}
+  .services-grid{grid-template-columns:1fr;max-width:480px;margin:2.5rem auto 0}
+}
+@media(max-width:600px){
+  .plans-grid{grid-template-columns:1fr}
+  .sla-banner{grid-template-columns:1fr}
+  .sla-metrics{justify-content:center}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div style="position:relative;z-index:1">
+    <div class="eyebrow">Pricing</div>
+    <h1 class="h1" style="margin-bottom:.9rem">Simple pricing.<br>Serious <span class="text-red">outcomes.</span></h1>
+    <p class="lead" style="max-width:520px;margin:0 auto">
+      Start free on the platform. Upgrade to services when you want results without the work. Every tier backed by our 99.9% uptime SLA.
+    </p>
+    <div class="billing-toggle" id="billingToggle">
+      <div class="toggle-opt active" data-billing="monthly">Monthly</div>
+      <div class="toggle-opt" data-billing="annual">Annual <span style="font-size:.72rem;opacity:.7">(save 20%)</span></div>
+    </div>
+    <div class="billing-note"><span>Annual plans save up to ₹14,400/year</span> — billed once, zero hassle.</div>
+  </div>
+</section>
+
+<!-- PLATFORM PLANS -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Platform Plans</div>
+      <h2 class="h2">Start free. Scale when<br><span class="text-red">your automations do.</span></h2>
+    </div>
+
+    <div class="plans-grid fade-up d1">
+      <!-- FREE -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">₹0</div>
+        <div class="plan-annual">&nbsp;</div>
+        <div class="plan-desc">Perfect for exploring. Build your first workflow and see what automation can do for you — no card needed.</div>
+        <ul class="plan-feats">
+          <li>100 tasks/month</li>
+          <li>5 active workflows</li>
+          <li>Basic integrations (300+)</li>
+          <li>Community support</li>
+          <li class="dim">AI workflow builder</li>
+          <li class="dim">Priority support</li>
+          <li class="dim">SLA guarantee</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-ol">Get Started →</a>
+      </div>
+
+      <!-- STARTER -->
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price" data-monthly="₹799" data-annual="₹639">₹799<small>/mo</small></div>
+        <div class="plan-annual" data-annual-note="₹7,668/yr — save ₹1,920">&nbsp;</div>
+        <div class="plan-desc">For solo founders and freelancers who are serious about automation and want the full integration library.</div>
+        <ul class="plan-feats">
+          <li>5,000 tasks/month</li>
+          <li>20 active workflows</li>
+          <li>All 2,100+ integrations</li>
+          <li>AI workflow builder</li>
+          <li>Email support</li>
+          <li class="dim">Priority support</li>
+          <li class="dim">SLA guarantee</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-ol">Start Free Trial →</a>
+      </div>
+
+      <!-- GROWTH -->
+      <div class="plan-card pop">
+        <div class="plan-pop">Most Popular</div>
+        <div class="plan-name">Growth</div>
+        <div class="plan-price" data-monthly="₹2,499" data-annual="₹1,999">₹2,499<small>/mo</small></div>
+        <div class="plan-annual" data-annual-note="₹23,988/yr — save ₹5,988">&nbsp;</div>
+        <div class="plan-desc">For growing teams who need automation running reliably across their entire stack with support when it matters.</div>
+        <ul class="plan-feats">
+          <li>25,000 tasks/month</li>
+          <li>Unlimited workflows</li>
+          <li>All 2,100+ integrations</li>
+          <li>AI workflow builder + AI steps</li>
+          <li>Priority email & chat support</li>
+          <li>99.9% uptime SLA</li>
+          <li>Team collaboration (3 seats)</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-red">Start Free Trial →</a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="plan-card">
+        <div class="plan-name">Business</div>
+        <div class="plan-price" data-monthly="₹5,999" data-annual="₹4,799">₹5,999<small>/mo</small></div>
+        <div class="plan-annual" data-annual-note="₹57,588/yr — save ₹14,400">&nbsp;</div>
+        <div class="plan-desc">For companies running automation as a core operational layer. SLA, SSO, audit logs, and dedicated support included.</div>
+        <ul class="plan-feats">
+          <li>100,000 tasks/month</li>
+          <li>Unlimited workflows</li>
+          <li>Custom integration requests</li>
+          <li>AI workflow builder + copilot</li>
+          <li>Dedicated success manager</li>
+          <li>99.9% SLA with credits</li>
+          <li>SSO + audit logs + 10 seats</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-ol">Contact Sales →</a>
+      </div>
+    </div>
+
+    <!-- SLA BANNER -->
+    <div class="sla-banner fade-up d2">
+      <div class="sla-banner-text">
+        <h3>99.9% Uptime — Contractually Guaranteed on Growth & Business Plans</h3>
+        <p>That's less than 8.7 hours of downtime per year. Backed by redundant infrastructure, real-time monitoring, and automatic failover. If we miss SLA, you get credits — automatically.</p>
+      </div>
+      <div class="sla-metrics">
+        <div class="sla-m"><div class="sla-m-val">99.9%</div><div class="sla-m-lbl">Uptime SLA</div></div>
+        <div class="sla-m"><div class="sla-m-val">&lt;8.7h</div><div class="sla-m-lbl">Max downtime/year</div></div>
+        <div class="sla-m"><div class="sla-m-val">&lt;4hr</div><div class="sla-m-lbl">Incident response</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES PRICING -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="eyebrow">Service Plans</div>
+      <h2 class="h2">Don't want to build it yourself?<br><span class="text-red">We'll do it for you.</span></h2>
+      <p class="lead" style="max-width:540px;margin:.9rem auto 0">
+        Our automation engineers take the platform and apply it to your specific business processes. Choose how involved you want to be.
+      </p>
+    </div>
+
+    <div class="services-grid fade-up d1">
+      <!-- GUIDED SETUP -->
+      <div class="svc-card">
+        <div class="svc-tier">Service Tier 02</div>
+        <div class="svc-name">Guided Setup</div>
+        <div class="svc-target">👥 For MSMEs & semi-technical teams</div>
+        <div class="svc-price">₹15,000 – ₹35,000</div>
+        <div class="svc-price-note">One-time fee · Based on scope</div>
+        <div class="svc-desc">We build your first 1–2 automation workflows from scratch — scoped, designed, built, tested, and handed over with full documentation and a training session.</div>
+        <div class="svc-includes">What's included</div>
+        <ul class="svc-list">
+          <li>Discovery call & process mapping (2 hrs)</li>
+          <li>2 custom workflows built by our engineers</li>
+          <li>Full testing across edge cases & errors</li>
+          <li>2-hour team training & handoff session</li>
+          <li>Complete workflow documentation</li>
+          <li>30-day support window post-launch</li>
+          <li>Platform subscription (Growth) included — 1 month free</li>
+        </ul>
+        <a href="#" class="svc-btn svc-btn-ol">Book a Setup Call →</a>
+      </div>
+
+      <!-- MANAGED -->
+      <div class="svc-card svc-feat">
+        <div class="svc-pop">Highest Value</div>
+        <div class="svc-tier">Service Tier 03</div>
+        <div class="svc-name">Managed</div>
+        <div class="svc-target">🏢 For businesses that never want to touch it</div>
+        <div class="svc-price">₹12,000 – ₹50,000<small style="font-size:.9rem;color:var(--ink-30);font-weight:400">/mo</small></div>
+        <div class="svc-price-note">Monthly retainer · 3 tiers available</div>
+        <div class="svc-desc">We own your automation stack end-to-end. Build, maintain, expand, and monitor — every month. You run your business. We run your automation.</div>
+        <div class="svc-includes">What's included</div>
+        <ul class="svc-list">
+          <li>Everything in Guided Setup (onboarding)</li>
+          <li>Unlimited workflow maintenance & fixes</li>
+          <li>Monthly expansion sprint (2–4 new automations)</li>
+          <li>24/7 monitoring with 4-hour incident response</li>
+          <li>Dedicated account manager</li>
+          <li>Quarterly automation ROI audit & report</li>
+          <li>Platform subscription (Business) included</li>
+        </ul>
+        <a href="#" class="svc-btn svc-btn-red">Talk to Sales →</a>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="svc-card">
+        <div class="svc-tier">Service Tier 04</div>
+        <div class="svc-name">Enterprise</div>
+        <div class="svc-target">🏭 For large orgs & custom requirements</div>
+        <div class="svc-price">Custom</div>
+        <div class="svc-price-note">Scoped per engagement</div>
+        <div class="svc-desc">For enterprises that need custom integrations, dedicated infrastructure, compliance requirements, and a full automation transformation partnership.</div>
+        <div class="svc-includes">What's included</div>
+        <ul class="svc-list">
+          <li>Everything in Managed</li>
+          <li>Custom integration / API development</li>
+          <li>Dedicated infrastructure & data residency</li>
+          <li>SSO, RBAC, audit logs, compliance support</li>
+          <li>On-site workshops available</li>
+          <li>SLA with financial credits</li>
+          <li>White-label option available</li>
+        </ul>
+        <a href="#" class="svc-btn svc-btn-ol">Contact Enterprise →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FULL FEATURE COMPARE -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-up" style="margin-bottom:2rem">
+      <div class="eyebrow">Full Comparison</div>
+      <h2 class="h2">Every feature.<br><span class="text-red">Every plan.</span></h2>
+    </div>
+    <div class="fade-up d1">
+      <table class="full-compare">
+        <thead>
+          <tr>
+            <th style="min-width:200px">Feature</th>
+            <th>Free</th><th>Starter</th><th class="hi">Growth</th><th>Business</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-row"><td colspan="5">Platform Core</td></tr>
+          <tr><td>Monthly tasks</td><td>100</td><td>5,000</td><td class="hi">25,000</td><td>100,000</td></tr>
+          <tr><td>Active workflows</td><td>5</td><td>20</td><td class="hi">Unlimited</td><td>Unlimited</td></tr>
+          <tr><td>App integrations</td><td>300+</td><td>2,100+</td><td class="hi">2,100+</td><td>2,100+ + custom</td></tr>
+          <tr><td>Multi-step workflows</td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td class="hi"><span class="ck">✓</span></td><td><span class="ck">✓</span></td></tr>
+          <tr><td>Conditional logic & filters</td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td class="hi"><span class="ck">✓</span></td><td><span class="ck">✓</span></td></tr>
+          <tr class="cat-row"><td colspan="5">AI & Intelligence</td></tr>
+          <tr><td>AI workflow builder</td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td class="hi"><span class="ck">✓</span></td><td><span class="ck">✓</span></td></tr>
+          <tr><td>AI steps in workflows</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hi"><span class="ck">✓</span></td><td><span class="ck">✓</span></td></tr>
+          <tr><td>AI copilot (troubleshoot & suggest)</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hi"><span class="cx">✗</span></td><td><span class="ck">✓</span></td></tr>
+          <tr class="cat-row"><td colspan="5">Reliability & Security</td></tr>
+          <tr><td>Uptime SLA</td><td>Best effort</td><td>Best effort</td><td class="hi">99.9% SLA</td><td>99.9% SLA + credits</td></tr>
+          <tr><td>Execution history</td><td>7 days</td><td>30 days</td><td class="hi">90 days</td><td>1 year</td></tr>
+          <tr><td>SSO / SAML</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hi"><span class="cx">✗</span></td><td><span class="ck">✓</span></td></tr>
+          <tr><td>Audit logs</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hi"><span class="cx">✗</span></td><td><span class="ck">✓</span></td></tr>
+          <tr class="cat-row"><td colspan="5">Support</td></tr>
+          <tr><td>Community support</td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td class="hi"><span class="ck">✓</span></td><td><span class="ck">✓</span></td></tr>
+          <tr><td>Email support</td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td class="hi">Priority</td><td>Priority</td></tr>
+          <tr><td>Dedicated success manager</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="hi"><span class="cx">✗</span></td><td><span class="ck">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-gray">
+  <div class="container container-n">
+    <div class="text-center fade-up">
+      <div class="eyebrow">FAQ</div>
+      <h2 class="h2">Questions we hear<br><span class="text-red">every day.</span></h2>
+    </div>
+    <div class="faq fade-up d1">
+      <div class="faq-item">
+        <div class="faq-q">What's the difference between platform plans and service plans? <div class="icon">+</div></div>
+        <div class="faq-a">Platform plans give you access to the viaSocket tool — you build and manage your own workflows. Service plans (Guided Setup & Managed) mean our team does the building and management for you. Most service clients also have a platform plan — the services run on top of the platform.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I switch between tiers at any time? <div class="icon">+</div></div>
+        <div class="faq-a">Yes. Platform plans can be upgraded or downgraded at any time. If you downgrade, you keep access until the end of your billing period. For service plans, Guided Setup is a one-time engagement with no lock-in. Managed plans have a 3-month minimum commitment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What does the 99.9% SLA actually mean? <div class="icon">+</div></div>
+        <div class="faq-a">99.9% uptime means your workflows can experience at most 8.76 hours of downtime per year. This is contractual on Growth and Business plans — if we miss it, you receive service credits automatically. We publish a live status page and have redundant infrastructure to back this commitment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How does the Guided Setup service work in practice? <div class="icon">+</div></div>
+        <div class="faq-a">After payment, you're booked for a 2-hour discovery call. We map your processes, identify automation opportunities, and scope 2 workflows. Our engineer builds and tests them (typically 3–5 working days), then we run a training session and hand over full documentation. 30-day support follows.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need technical knowledge for any plan? <div class="icon">+</div></div>
+        <div class="faq-a">For Self-Serve plans — basic comfort with apps and logic helps, but our AI builder minimises the learning curve significantly. For Guided Setup and Managed — zero technical knowledge required. You describe your business process in plain language; we handle everything else.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What happens if my workflow breaks on a Managed plan? <div class="icon">+</div></div>
+        <div class="faq-a">Our monitoring system detects failures in real time. For Managed clients, our team is alerted automatically and begins remediation within 4 hours — often before you notice anything is wrong. For Self-Serve, you receive email alerts and can troubleshoot using our built-in debugger and support team.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-sm">
+  <div class="container">
+    <div style="text-align:center" class="fade-up">
+      <div class="eyebrow">Ready?</div>
+      <h2 class="h2" style="margin-bottom:1rem">Start free. Upgrade<br><span class="text-red">when you're ready to scale.</span></h2>
+      <p class="lead" style="max-width:460px;margin:0 auto 2rem">
+        No card required for Free or Trial plans. Cancel anytime. 99.9% SLA from day one on paid plans.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="#" class="btn-red btn-lg">Start for Free →</a>
+        <a href="#" class="btn-outline btn-lg">Book a Demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+// Billing toggle
+const btns = document.querySelectorAll('.toggle-opt');
+btns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const isAnnual = btn.dataset.billing === 'annual';
+    document.querySelectorAll('.plan-price[data-monthly]').forEach(el => {
+      const m = el.dataset.monthly; const a = el.dataset.annual;
+      el.innerHTML = (isAnnual ? a : m) + '<small>/mo</small>';
+    });
+    document.querySelectorAll('.plan-annual[data-annual-note]').forEach(el => {
+      el.textContent = isAnnual ? el.dataset.annualNote : '';
+    });
+  });
+});
+
+// FAQ accordion
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    item.classList.toggle('open');
+  });
+});
+</script>
+{% endblock %}
